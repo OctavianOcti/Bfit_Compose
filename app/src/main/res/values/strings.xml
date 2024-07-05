@@ -1,3 +1,175 @@
 <resources>
     <string name="app_name">Bfit</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="passwowrd">Password</string>
+    <string name="register">Register</string>
+    <string name="click_to_login">Click to login</string>
+    <string name="click_to_register">Click to register</string>
+    <string name="logout">Logout</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="reset_password">Reset password</string>
+    <string name="facebook_app_id">484681563697276</string>
+    <string name="fb_login_protocol_scheme">fb484681563697276</string>
+    <string name="facebook_client_token">cd85dd0cab52c27d85d31e469e644f79</string>
+    <string name="more">More</string>
+    <string name="home">Home</string>
+    <string name="open_nav">Open Navigation Drawer</string>
+    <string name="close_nav">Close Navigation Drawer</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enter_your_stats_below">Enter Your Stats Below</string>
+    <string name="set_current_weight">Set current weight</string>
+    <string name="gender">Gender</string>
+    <string name="set_gender">Set gender</string>
+    <string name="weight_kgs">Weight (kgs)</string>
+    <string name="set_current_height">Set current height</string>
+    <string name="age_years">Age (years)</string>
+    <string name="height_cm">Height (cm)</string>
+    <string name="set_current_age">Set current age</string>
+    <string name="activity_level">Activity level</string>
+    <string name="set_current_activity_level">Set current activity level</string>
+    <string name="goal">Goal</string>
+    <string name="set_your_goal">Set your goal</string>
+    <string name="sedentary">Sedentary</string>
+    <string name="slightly_active">Slightly active</string>
+    <string name="moderately_active">Moderately active</string>
+    <string name="very_active">Very active</string>
+    <string name="extreme_active">Extremely active</string>
+    <string name="PreviousDateButtonText"><![CDATA[<]]></string>
+    <string name="NextDayButtonText"><![CDATA[>]]></string>
+    <string name="breakfast">Breakfast</string>
+    <string name="add_food">Add Food</string>
+    <string name="lunch">Lunch</string>
+    <string name="snacks">Snacks</string>
+    <string name="dinner">Dinner</string>
+    <string name="select_date">Select Date</string>
+    <string name="please_enter_email">Please enter email</string>
+    <string name="please_enter_password">Please enter password</string>
+    <string name="at_least_8_characters">At least 8 characters</string>
+    <string name="password_should_be">Password should be</string>
+    <string name="please_enter_confirmation_password">Please enter confirmation password</string>
+    <string name="minimum_one_uppercase">Minimum one uppercase</string>
+    <string name="minimum_one_symbol">Minimum one symbol</string>
+    <string name="sign_up">Sign up</string>
+    <string name="quick_add">Quick Add</string>
+    <string name="kcal">Kcal(per 100g)</string>
+    <string name="required">Required</string>
+    <string name="carbohydrates">Carbs (per 100g)</string>
+    <string name="enter_calories_amount">Enter calorie amount</string>
+    <string name="enter_carbs_amount">Enter carbs amount</string>
+    <string name="protein_g">Protein (per 100g)</string>
+    <string name="enter_protein_amount">Enter protein amount</string>
+    <string name="fat_g">Fat (per 100g)</string>
+    <string name="enter_fat_amount">Enter fat amount</string>
+    <string name="add_calories">Add calories</string>
+    <string name="meal">Meal</string>
+    <string name="select_meal">Select meal</string>
+    <string name="serving_size_g">Serving size (g)</string>
+    <string name="enter_serving_size">Enter serving size</string>
+    <string name="kcal_g">Kcal (g)</string>
+    <string name="food_name">Food name</string>
+    <string name="enter_food_name">Enter food name</string>
+    <string name="serving_size">Serving size:</string>
+    <string name="macros">Macros</string>
+    <string name="GoalsTip">There is nothing inaccurate about the Activity Levels calorie information. However, the explanation leaves many people confused. In addition to being confused people can easily assume their activity level is higher than the reality. For example, if you train 6–7 days per week and have a desk job, you could be a "Sedentary"!</string>
+    <string name="proteinslider">proteinSlider</string>
+    <string name="carbslider">carbSlider</string>
+    <string name="calories">Calories</string>
+    <string name="macronutrients">Macronutrients</string>
+    <string name="enter_meal_name">Enter meal name</string>
+    <string name="meal_name">Meal Name</string>
+    <string name="create_a_meal">Create a meal</string>
+    <string name="create_a_food">Create a food</string>
+    <string name="imgaddfood">imgAddFood</string>
+    <string name="kcal_simple">kcal</string>
+    <string name="_0">0</string>
+    <string name="carbs_g">Carbs(g)</string>
+    <string name="protein">Protein(g)</string>
+    <string name="fat">Fat(g)</string>
+    <string name="search_for_food_meal">Search for food, meal</string>
+    <string name="imgscanbarcode">imgScanBarcode</string>
+    <string name="imgmanualaddfood">imgManualAddFood</string>
+    <string name="imgwatermelon">imgWatermelon</string>
+    <string name="imgmeal">imgMeal</string>
+    <string name="adjust_your_default_or_daily_goals">Adjust your default or daily goals</string>
+    <string name="calorie_carbs_protein_and_fat_goals">Calorie,Carbs, Protein and Fat Goals</string>
+    <string name="you_should_set_your_personal_information_first">You should set your personal information first!</string>
+    <string name="nutrition_goals">Nutrition Goals</string>
+    <string name="imgconfirm">imgConfirm</string>
+    <string name="adjust_your_default_calories_goal">Adjust your default calories goal</string>
+    <string name="fatslider">FatSlider</string>
+    <string name="_250g">250g</string>
+    <string name="fat1">Fat:</string>
+    <string name="carb">Carb:</string>
+    <string name="protein_simple">Protein</string>
+    <string name="imgresetmacros">imgResetMacros</string>
+    <string name="imgsavemacros">imgSaveMacros</string>
+    <string name="tablayout">TabLayout</string>
+    <string name="minimum_one_number">Minimum one number</string>
+    <string name="food_brand">Food brand</string>
+    <string name="kcal_per_100g">Kcal(per 100g)</string>
+    <string name="carbs_per_100g">Carbs(per 100g)</string>
+    <string name="protein_per_100g">Protein(per 100g)</string>
+    <string name="fat_per_100g">Fat(per 100g)</string>
+    <string name="profile">Profile</string>
+    <string name="goals">Goals</string>
+    <string name="diary">Diary</string>
+    <string name="meals_amp_food"><![CDATA[Meals & Food]]></string>
+    <string name="_120">120</string>
+    <string name="g">g</string>
+    <string name="_125">125</string>
+    <string name="calories_logged">Calories logged:</string>
+    <string name="food">Food</string>
+    <string name="_100g">/100g</string>
+    <string name="brand">(brand)</string>
+    <string name="username">Username</string>
+    <string name="_22">22</string>
+    <string name="years_old">years old,</string>
+    <string name="weight">Weight</string>
+    <string name="_100">100</string>
+    <string name="kg">kg</string>
+    <string name="height">Height</string>
+    <string name="cm">cm</string>
+    <string name="customization">Customization</string>
+    <string name="personal_details">Personal details</string>
+    <string name="adjust_calories">Adjust calories</string>
+    <string name="protein_carbs_and_fat">Protein, carbs and fat</string>
+    <string name="adjust_meals_and_food">Adjust Meals and Food</string>
+    <string name="track_food">Track Food</string>
+    <string name="calorie_goal">Calorie Goal</string>
+    <string name="kcal_left">kcal left</string>
+    <string name="_0_kcal">0 kcal</string>
+    <string name="last_7_days_tracked_calories">Last 7 days tracked calories</string>
+    <string name="tap_to_view_your_tracked_food">Tap to view your tracked food</string>
+    <string name="no_tracked_food_available">No tracked food available</string>
+    <string name="you_need_to_have_recorded_foods_to_view_the_history_chart">You need to have recorded foods to view the history chart</string>
+    <string-array name="male_famale">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <string-array name="activity_level">
+        <item>Sedentary (little to no exercise in a day)</item>
+        <item>Slightly active (light exercise/sports 1–3 days/week)</item>
+        <item>Moderately active (moderate exercise/sports 3–5 days/week)</item>
+        <item>Very active (hard exercise/sports 6–7 days a week)</item>
+        <item>Extremely active (very hard exercise/sports and physical job OR 2x training per day)</item>
+    </string-array>
+    <string-array name="weekly_goal">
+        <item>Lose 1kg per week</item>
+        <item>Lose 0.75kg per week</item>
+        <item>Lose 0.5kg per week</item>
+        <item>Maintain current weight</item>
+        <item>Gain 0.25kg per week</item>
+        <item>Gain 0.5kg per week</item>
+
+    </string-array>
+    <string-array name="select_meal">
+        <item>Breakfast</item>
+        <item>Lunch</item>
+        <item>Dinner</item>
+        <item>Snacks</item>
+    </string-array>
+
+
 </resources>
