@@ -6,10 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bfit.authentication.data.AndroidEmailPatternValidator
+import com.example.bfit.authentication.data.AndroidPasswordPatternValidator
 import com.example.bfit.authentication.domain.ValidateEmail
 import com.example.bfit.authentication.domain.ValidatePassword
 import com.example.bfit.authentication.domain.ValidateRepeatedPassword
-import com.example.bfit.authentication.domain.ValidateTerms
 import com.example.bfit.authentication.presentation.RegistrationFormEvent
 import com.example.bfit.authentication.presentation.RegistrationFormState
 
@@ -19,9 +19,8 @@ import kotlinx.coroutines.launch
 
 class RegisterViewModel(
     private val validateEmail: ValidateEmail = ValidateEmail(AndroidEmailPatternValidator()),
-    private val validatePassword: ValidatePassword = ValidatePassword(),
+    private val validatePassword: ValidatePassword = ValidatePassword(AndroidPasswordPatternValidator()),
     private val validateRepeatedPassword: ValidateRepeatedPassword = ValidateRepeatedPassword(),
-    private val validateTerms: ValidateTerms = ValidateTerms()
 ): ViewModel() {
 
     var state by mutableStateOf(RegistrationFormState())
@@ -33,20 +32,38 @@ class RegisterViewModel(
         when(event) {
             is RegistrationFormEvent.EmailChanged -> {
                 state = state.copy(email = event.email)
+                validateEmail()
             }
             is RegistrationFormEvent.PasswordChanged -> {
                 state = state.copy(password = event.password)
+                validatePassword()
             }
             is RegistrationFormEvent.RepeatedPasswordChanged -> {
                 state = state.copy(repeatedPassword = event.repeatedPassword)
+                validateRepeatedPassword()
             }
-            is RegistrationFormEvent.AcceptTerms -> {
-                state = state.copy(acceptedTerms = event.isAccepted)
+
+            is RegistrationFormEvent.CheckData -> {
+
             }
             is RegistrationFormEvent.Submit -> {
                 submitData()
             }
         }
+    }
+    private fun validateEmail() {
+        val emailResult = validateEmail.execute(state.email)
+        state = state.copy(emailError = emailResult.errorMessage)
+    }
+
+    private fun validatePassword() {
+        val passwordResult = validatePassword.execute(state.password)
+        state = state.copy(passwordError = passwordResult.errorMessage)
+    }
+
+    private fun validateRepeatedPassword() {
+        val repeatedPasswordResult = validateRepeatedPassword.execute(state.password, state.repeatedPassword)
+        state = state.copy(repeatedPasswordError = repeatedPasswordResult.errorMessage)
     }
 
     private fun submitData() {
@@ -55,13 +72,12 @@ class RegisterViewModel(
         val repeatedPasswordResult = validateRepeatedPassword.execute(
             state.password, state.repeatedPassword
         )
-        val termsResult = validateTerms.execute(state.acceptedTerms)
 
         val hasError = listOf(
             emailResult,
             passwordResult,
             repeatedPasswordResult,
-            termsResult
+
         ).any { !it.successful }
 
         if(hasError) {
@@ -69,14 +85,14 @@ class RegisterViewModel(
                 emailError = emailResult.errorMessage,
                 passwordError = passwordResult.errorMessage,
                 repeatedPasswordError = repeatedPasswordResult.errorMessage,
-                termsError = termsResult.errorMessage
             )
             return
         }
-        viewModelScope.launch {
-            validationEventChannel.send(ValidationEvent.Success)
-        }
+//        viewModelScope.launch {
+//            validationEventChannel.send(ValidationEvent.Success)
+//        }
     }
+
 
     sealed class ValidationEvent {
         object Success: ValidationEvent()

@@ -1,9 +1,9 @@
 package com.example.bfit.authentication.presentation.register
 
-
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,10 +24,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,23 +44,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bfit.R
-import com.example.bfit.authentication.presentation.MainViewModel
 import com.example.bfit.authentication.presentation.RegistrationFormEvent
 
 @Composable
 fun RegisterScreen() {
-//    var email by remember { mutableStateOf("") }
-//    var password by remember { mutableStateOf("") }
-//    var confirmPassword by remember { mutableStateOf("") }
-//    var emailError by remember { mutableStateOf(false) }
-//    var passwordError by remember { mutableStateOf(false) }
-//    var confirmPasswordError by remember { mutableStateOf(false) }
-
     val viewModel = viewModel<RegisterViewModel>()
     val state = viewModel.state
     val context = LocalContext.current
+
+    val isAtLeast8Characters by remember(state.password) {
+        derivedStateOf { state.password.length >= 8 }
+    }
+    val hasUppercase by remember(state.password) {
+        derivedStateOf { state.password.any { it.isUpperCase() } }
+    }
+    val hasNumber by remember(state.password) {
+        derivedStateOf { state.password.any { it.isDigit() } }
+    }
+    val hasSymbol by remember(state.password) {
+        derivedStateOf { state.password.any { !it.isLetterOrDigit() } }
+    }
+    val isPasswordValid by remember(isAtLeast8Characters, hasUppercase, hasNumber, state.repeatedPasswordError) {
+        derivedStateOf { isAtLeast8Characters && hasUppercase && hasNumber && hasSymbol && state.repeatedPasswordError==null }
+    }
+
     LaunchedEffect(key1 = context) {
-        viewModel.validationEvents.collect{ event ->
+        viewModel.validationEvents.collect { event ->
             when (event) {
                 is RegisterViewModel.ValidationEvent.Success -> {
                     Toast.makeText(
@@ -72,8 +80,8 @@ fun RegisterScreen() {
                 }
             }
         }
-        
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -144,7 +152,7 @@ fun RegisterScreen() {
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value =  state.repeatedPassword,
+            value = state.repeatedPassword,
             onValueChange = {
                 viewModel.onEvent(RegistrationFormEvent.RepeatedPasswordChanged(it))
             },
@@ -176,10 +184,24 @@ fun RegisterScreen() {
             modifier = Modifier.fillMaxWidth()
         )
 
-        PasswordCriteria(text = stringResource(id = R.string.at_least_8_characters))
-        PasswordCriteria(text = stringResource(id = R.string.minimum_one_uppercase))
-        PasswordCriteria(text = stringResource(id = R.string.minimum_one_number))
-        PasswordCriteria(text = stringResource(id = R.string.minimum_one_symbol))
+        PasswordCriteria(
+            text = stringResource(id = R.string.at_least_8_characters),
+            cardColor = if (isAtLeast8Characters) Color.Green else Color.Red
+        )
+        PasswordCriteria(
+            text = stringResource(id = R.string.minimum_one_uppercase),
+            cardColor = if (hasUppercase) Color.Green else Color.Red
+        )
+        PasswordCriteria(
+            text = stringResource(id = R.string.minimum_one_number),
+            cardColor = if (hasNumber) Color.Green else Color.Red
+        )
+        PasswordCriteria(
+            text = stringResource(id = R.string.minimum_one_symbol),
+            cardColor = if (hasSymbol) Color.Green else Color.Red
+        )
+
+        // You can add more PasswordCriteria calls for other criteria
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -187,15 +209,14 @@ fun RegisterScreen() {
             onClick = {
                 viewModel.onEvent(RegistrationFormEvent.Submit)
             },
-            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.gainsboro)),
+            colors = ButtonDefaults.buttonColors(containerColor = if (isPasswordValid) Color.Green else colorResource(id = R.color.gainsboro)),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.sign_up),
-                color= Color.Black
-
+                color = Color.Black
             )
         }
 
@@ -213,7 +234,7 @@ fun RegisterScreen() {
 }
 
 @Composable
-fun PasswordCriteria(text: String) {
+fun PasswordCriteria(text: String, cardColor: Color) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -227,12 +248,20 @@ fun PasswordCriteria(text: String) {
                 .padding(start = 4.dp),
             shape = MaterialTheme.shapes.small
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_check_24),
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(20.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .background(cardColor)
+                    .fillMaxSize()
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_check_24),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(16.dp) // Adjust size if necessary
+                )
+            }
         }
         Spacer(modifier = Modifier.width(10.dp))
         Text(
@@ -248,5 +277,3 @@ fun PasswordCriteria(text: String) {
 fun RegisterScreenPreview() {
     RegisterScreen()
 }
-
-
