@@ -1,9 +1,8 @@
-package com.example.bfit.authvalidation.domain
+package com.example.bfit.authentication.domain
 
-import android.util.Patterns
-
-class ValidateEmail {
-
+class ValidateEmail(
+    private val validator : EmailPatternValidator
+) {
     fun execute(email: String): ValidationResult {
         if(email.isBlank()) {
             return ValidationResult(
@@ -11,7 +10,7 @@ class ValidateEmail {
                 errorMessage = "The email can't be blank"
             )
         }
-        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if(!validator.isValidEmail(email)) {
             return ValidationResult(
                 successful = false,
                 errorMessage = "That's not a valid email"

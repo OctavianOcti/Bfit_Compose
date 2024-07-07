@@ -1,21 +1,24 @@
-package com.example.bfit.authvalidation.presentation
+package com.example.bfit.authentication.presentation.register
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bfit.authvalidation.domain.ValidateEmail
-import com.example.bfit.authvalidation.domain.ValidatePassword
-import com.example.bfit.authvalidation.domain.ValidateRepeatedPassword
-import com.example.bfit.authvalidation.domain.ValidateTerms
+import com.example.bfit.authentication.data.AndroidEmailPatternValidator
+import com.example.bfit.authentication.domain.ValidateEmail
+import com.example.bfit.authentication.domain.ValidatePassword
+import com.example.bfit.authentication.domain.ValidateRepeatedPassword
+import com.example.bfit.authentication.domain.ValidateTerms
+import com.example.bfit.authentication.presentation.RegistrationFormEvent
+import com.example.bfit.authentication.presentation.RegistrationFormState
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-class MainViewModel(
-    private val validateEmail: ValidateEmail = ValidateEmail(),
+class RegisterViewModel(
+    private val validateEmail: ValidateEmail = ValidateEmail(AndroidEmailPatternValidator()),
     private val validatePassword: ValidatePassword = ValidatePassword(),
     private val validateRepeatedPassword: ValidateRepeatedPassword = ValidateRepeatedPassword(),
     private val validateTerms: ValidateTerms = ValidateTerms()

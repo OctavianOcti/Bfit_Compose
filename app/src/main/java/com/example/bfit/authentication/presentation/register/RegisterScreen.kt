@@ -1,6 +1,7 @@
-package com.example.bfit.authvalidation.presentation.registration
+package com.example.bfit.authentication.presentation.register
 
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,12 +16,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,21 +43,40 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bfit.R
+import com.example.bfit.authentication.presentation.MainViewModel
+import com.example.bfit.authentication.presentation.RegistrationFormEvent
 
 @Composable
 fun RegisterScreen() {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var emailError by remember { mutableStateOf(false) }
-    var passwordError by remember { mutableStateOf(false) }
-    var confirmPasswordError by remember { mutableStateOf(false) }
+//    var email by remember { mutableStateOf("") }
+//    var password by remember { mutableStateOf("") }
+//    var confirmPassword by remember { mutableStateOf("") }
+//    var emailError by remember { mutableStateOf(false) }
+//    var passwordError by remember { mutableStateOf(false) }
+//    var confirmPasswordError by remember { mutableStateOf(false) }
 
+    val viewModel = viewModel<RegisterViewModel>()
+    val state = viewModel.state
+    val context = LocalContext.current
+    LaunchedEffect(key1 = context) {
+        viewModel.validationEvents.collect{ event ->
+            when (event) {
+                is RegisterViewModel.ValidationEvent.Success -> {
+                    Toast.makeText(
+                        context,
+                        "Registration successful",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+        
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(15.dp)
             .background(colorResource(id = R.color.darkGrey)),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -68,22 +91,22 @@ fun RegisterScreen() {
         )
 
         OutlinedTextField(
-            value = email,
+            value = state.email,
             onValueChange = {
-                email = it
-                emailError = false
+                viewModel.onEvent(RegistrationFormEvent.EmailChanged(it))
             },
             label = { Text(text = stringResource(id = R.string.email)) },
+            isError = state.emailError != null,
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp)
-                .padding(start=5.dp,end=5.dp, top=0.dp,bottom = 16.dp),
+                .padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 16.dp),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             textStyle = TextStyle(color = colorResource(id = R.color.darkWhite))
         )
-        if (emailError) {
+        if (state.emailError != null) {
             Text(
-                text = stringResource(id = R.string.please_enter_email),
+                text = state.emailError,
                 color = Color.Red,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -94,23 +117,23 @@ fun RegisterScreen() {
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = password,
+            value = state.password,
             onValueChange = {
-                password = it
-                passwordError = false
+                viewModel.onEvent(RegistrationFormEvent.PasswordChanged(it))
             },
             label = { Text(text = stringResource(id = R.string.passwowrd)) },
+            isError = state.passwordError != null,
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp)
-                .padding(start=5.dp,end=5.dp, top=0.dp,bottom = 16.dp),
+                .padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 16.dp),
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             textStyle = TextStyle(color = colorResource(id = R.color.darkWhite))
         )
-        if (passwordError) {
+        if (state.passwordError != null) {
             Text(
-                text = stringResource(id = R.string.please_enter_password),
+                text = state.passwordError,
                 color = Color.Red,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -121,23 +144,23 @@ fun RegisterScreen() {
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = confirmPassword,
+            value =  state.repeatedPassword,
             onValueChange = {
-                confirmPassword = it
-                confirmPasswordError = false
+                viewModel.onEvent(RegistrationFormEvent.RepeatedPasswordChanged(it))
             },
             label = { Text(text = stringResource(id = R.string.confirm_password)) },
+            isError = state.repeatedPasswordError != null,
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp)
-                .padding(start=5.dp,end=5.dp, top=0.dp,bottom = 16.dp),
+                .padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 16.dp),
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             textStyle = TextStyle(color = colorResource(id = R.color.darkWhite))
         )
-        if (confirmPasswordError) {
+        if (state.repeatedPasswordError != null) {
             Text(
-                text = stringResource(id = R.string.please_enter_confirmation_password),
+                text = state.repeatedPasswordError,
                 color = Color.Red,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -162,16 +185,18 @@ fun RegisterScreen() {
 
         Button(
             onClick = {
-                // Handle register click
-                emailError = email.isEmpty()
-                passwordError = password.isEmpty()
-                confirmPasswordError = confirmPassword.isEmpty()
+                viewModel.onEvent(RegistrationFormEvent.Submit)
             },
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.gainsboro)),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
         ) {
-            Text(text = stringResource(id = R.string.sign_up))
+            Text(
+                text = stringResource(id = R.string.sign_up),
+                color= Color.Black
+
+            )
         }
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -199,7 +224,7 @@ fun PasswordCriteria(text: String) {
         Card(
             modifier = Modifier
                 .size(20.dp)
-                .background(Color.Gray),
+                .padding(start = 4.dp),
             shape = MaterialTheme.shapes.small
         ) {
             Icon(
@@ -223,3 +248,5 @@ fun PasswordCriteria(text: String) {
 fun RegisterScreenPreview() {
     RegisterScreen()
 }
+
+

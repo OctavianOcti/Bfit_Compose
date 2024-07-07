@@ -1,4 +1,4 @@
-package com.example.bfit.authvalidation.presentation.login
+package com.example.bfit.authentication.presentation.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

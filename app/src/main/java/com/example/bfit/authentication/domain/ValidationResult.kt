@@ -1,4 +1,4 @@
-package com.example.bfit.authvalidation.domain
+package com.example.bfit.authentication.domain
 
 data class ValidationResult(
     val successful: Boolean,

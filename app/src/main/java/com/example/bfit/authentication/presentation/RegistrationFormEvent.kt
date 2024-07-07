@@ -1,4 +1,4 @@
-package com.example.bfit.authvalidation.presentation
+package com.example.bfit.authentication.presentation
 
 sealed class RegistrationFormEvent {
     data class EmailChanged(val email: String) : RegistrationFormEvent()

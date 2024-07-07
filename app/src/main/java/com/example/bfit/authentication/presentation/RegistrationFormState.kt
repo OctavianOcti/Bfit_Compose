@@ -1,4 +1,4 @@
-package com.example.bfit.authvalidation.presentation
+package com.example.bfit.authentication.presentation
 
 data class RegistrationFormState(
     val email: String = "",
