@@ -1,4 +1,6 @@
-package com.example.bfit.authentication.domain
+package com.example.bfit.authentication.domain.use_case
+
+import com.example.bfit.authentication.domain.ValidationResult
 
 class ValidatePassword(
     private val validator : PasswordPatternValidator

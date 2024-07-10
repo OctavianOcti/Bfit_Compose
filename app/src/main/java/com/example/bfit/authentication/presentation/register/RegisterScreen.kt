@@ -1,5 +1,6 @@
 package com.example.bfit.authentication.presentation.register
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,16 +15,16 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -34,7 +35,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -42,15 +42,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bfit.R
-import com.example.bfit.authentication.presentation.RegistrationFormEvent
+import com.example.bfit.authentication.presentation.components.CustomOutlinedTextField
+import com.google.firebase.auth.AuthResult
+import kotlinx.coroutines.flow.collectLatest
+
 
 @Composable
-fun RegisterScreen() {
-    val viewModel = viewModel<RegisterViewModel>()
+fun RegisterScreen(
+    navigateToLogin: () -> Unit = {}
+) {
+    val viewModel: RegisterViewModel = hiltViewModel()
     val state = viewModel.state
     val context = LocalContext.current
+    val registerState by viewModel.registerState.collectAsState()
+
 
     val isAtLeast8Characters by remember(state.password) {
         derivedStateOf { state.password.length >= 8 }
@@ -64,20 +71,52 @@ fun RegisterScreen() {
     val hasSymbol by remember(state.password) {
         derivedStateOf { state.password.any { !it.isLetterOrDigit() } }
     }
-    val isPasswordValid by remember(isAtLeast8Characters, hasUppercase, hasNumber, state.repeatedPasswordError) {
-        derivedStateOf { isAtLeast8Characters && hasUppercase && hasNumber && hasSymbol && state.repeatedPasswordError==null }
+    val isPasswordValid by remember(
+        isAtLeast8Characters,
+        hasUppercase,
+        hasNumber,
+        state.repeatedPasswordError,
+    ) {
+        derivedStateOf { isAtLeast8Characters && hasUppercase && hasNumber && hasSymbol && state.repeatedPasswordError == null }
+    }
+    val isValidInputData by remember(
+        isPasswordValid,
+        state.email,
+        state.emailError
+    ) {
+        derivedStateOf { isPasswordValid && state.email != "" && state.emailError == null }
     }
 
     LaunchedEffect(key1 = context) {
         viewModel.validationEvents.collect { event ->
             when (event) {
                 is RegisterViewModel.ValidationEvent.Success -> {
-                    Toast.makeText(
-                        context,
-                        "Registration successful",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    viewModel.onEvent(RegistrationFormEvent.Register)
+                    // Assuming registerState is part of AuthState, handle its states
                 }
+            }
+        }
+    }
+    LaunchedEffect(key1 = registerState) {
+        when {
+            registerState.isLoading -> {
+            }
+
+            registerState.isSuccess -> {
+                Toast.makeText(
+                    context,
+                    "Registered successfully",
+                    Toast.LENGTH_LONG
+                ).show()
+
+            }
+            registerState.isError != null -> {
+                Toast.makeText(
+                    context,
+                    "An error has occured, please try again!",
+                    Toast.LENGTH_LONG
+                ).show()
+
             }
         }
     }
@@ -98,83 +137,51 @@ fun RegisterScreen() {
             textAlign = TextAlign.Center
         )
 
-        OutlinedTextField(
+
+        CustomOutlinedTextField(
             value = state.email,
-            onValueChange = {
-                viewModel.onEvent(RegistrationFormEvent.EmailChanged(it))
-            },
-            label = { Text(text = stringResource(id = R.string.email)) },
+            onValueChange = { viewModel.onEvent(RegistrationFormEvent.EmailChanged(it)) },
+            label = stringResource(id = R.string.email),
             isError = state.emailError != null,
+            errorMessage = state.emailError ?: "",
+            keyboardType = KeyboardType.Email,
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp)
-                .padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 16.dp),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            textStyle = TextStyle(color = colorResource(id = R.color.darkWhite))
+                .padding(horizontal = 5.dp, vertical = 16.dp),
         )
-        if (state.emailError != null) {
-            Text(
-                text = state.emailError,
-                color = Color.Red,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 5.dp, end = 5.dp)
-            )
-        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
+        CustomOutlinedTextField(
             value = state.password,
-            onValueChange = {
-                viewModel.onEvent(RegistrationFormEvent.PasswordChanged(it))
-            },
-            label = { Text(text = stringResource(id = R.string.passwowrd)) },
+            onValueChange = { viewModel.onEvent(RegistrationFormEvent.PasswordChanged(it)) },
+            label = stringResource(id = R.string.passwowrd),
             isError = state.passwordError != null,
+            errorMessage = state.passwordError ?: "",
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardType = KeyboardType.Password,
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp)
-                .padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 16.dp),
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            textStyle = TextStyle(color = colorResource(id = R.color.darkWhite))
+                .padding(horizontal = 5.dp, vertical = 16.dp),
         )
-        if (state.passwordError != null) {
-            Text(
-                text = state.passwordError,
-                color = Color.Red,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 5.dp, end = 5.dp)
-            )
-        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
+        CustomOutlinedTextField(
             value = state.repeatedPassword,
-            onValueChange = {
-                viewModel.onEvent(RegistrationFormEvent.RepeatedPasswordChanged(it))
-            },
-            label = { Text(text = stringResource(id = R.string.confirm_password)) },
+            onValueChange = { viewModel.onEvent(RegistrationFormEvent.RepeatedPasswordChanged(it)) },
+            label = stringResource(id = R.string.confirm_password),
             isError = state.repeatedPasswordError != null,
+            errorMessage = state.repeatedPasswordError ?: "",
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardType = KeyboardType.Password,
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp)
-                .padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 16.dp),
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            textStyle = TextStyle(color = colorResource(id = R.color.darkWhite))
+                .padding(horizontal = 5.dp, vertical = 16.dp),
         )
-        if (state.repeatedPasswordError != null) {
-            Text(
-                text = state.repeatedPasswordError,
-                color = Color.Red,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 5.dp, end = 5.dp)
-            )
-        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -209,7 +216,11 @@ fun RegisterScreen() {
             onClick = {
                 viewModel.onEvent(RegistrationFormEvent.Submit)
             },
-            colors = ButtonDefaults.buttonColors(containerColor = if (isPasswordValid) Color.Green else colorResource(id = R.color.gainsboro)),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isValidInputData) Color.Green else colorResource(
+                    id = R.color.gainsboro
+                )
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
@@ -222,14 +233,18 @@ fun RegisterScreen() {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Text(
-            text = stringResource(id = R.string.click_to_login),
-            fontSize = 20.sp,
-            color = colorResource(id = R.color.blue_shade),
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
+        TextButton(onClick = { navigateToLogin() })
+        {
+            Text(
+                text = stringResource(id = R.string.click_to_login),
+                fontSize = 20.sp,
+                color = colorResource(id = R.color.blue_shade),
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
     }
 }
 

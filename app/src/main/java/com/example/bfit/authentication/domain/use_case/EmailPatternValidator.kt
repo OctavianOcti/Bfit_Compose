@@ -1,4 +1,4 @@
-package com.example.bfit.authentication.domain
+package com.example.bfit.authentication.domain.use_case
 
 interface EmailPatternValidator {
 

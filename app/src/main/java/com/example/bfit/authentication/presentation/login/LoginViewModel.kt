@@ -1,6 +1,5 @@
-package com.example.bfit.authentication.presentation.register
+package com.example.bfit.authentication.presentation.login
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.bfit.authentication.domain.repository.AuthRepository
 import com.example.bfit.authentication.domain.use_case.AuthUseCases
 import com.example.bfit.authentication.presentation.AuthState
+import com.example.bfit.authentication.presentation.register.RegistrationFormEvent
+import com.example.bfit.authentication.presentation.register.RegisterFormState
 import com.example.bfit.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor(
+class LoginViewModel @Inject constructor(
     private val repository: AuthRepository,
 //    private val validateEmail: ValidateEmail,
 //    private val validatePassword: ValidatePassword,
@@ -30,37 +31,33 @@ class RegisterViewModel @Inject constructor(
     private val authUseCases: AuthUseCases
 ) : ViewModel() {
 
-    private var _registerState = MutableStateFlow(value = AuthState())
-    val registerState = _registerState.asStateFlow()
+    private var _loginState = MutableStateFlow(value = AuthState())
+    val loginState = _loginState.asStateFlow()
 
-    var state by mutableStateOf(RegisterFormState())
+    var state by mutableStateOf(LoginFormState())
         private set
 
     private val validationEventChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
 
-    fun onEvent(event: RegistrationFormEvent) {
+    fun onEvent(event: LoginFormEvent) {
         when (event) {
-            is RegistrationFormEvent.EmailChanged -> {
+            is LoginFormEvent.EmailChanged -> {
                 state = state.copy(email = event.email)
                 validateEmail()
             }
 
-            is RegistrationFormEvent.PasswordChanged -> {
+            is LoginFormEvent.PasswordChanged -> {
                 state = state.copy(password = event.password)
                 validatePassword()
             }
 
-            is RegistrationFormEvent.RepeatedPasswordChanged -> {
-                state = state.copy(repeatedPassword = event.repeatedPassword)
-                validateRepeatedPassword()
+
+            is LoginFormEvent.Login -> {
+                loginUser(state.email, state.password)
             }
 
-            is RegistrationFormEvent.Register -> {
-                registerUser(state.email, state.password)
-            }
-
-            is RegistrationFormEvent.Submit -> {
+            is LoginFormEvent.Submit -> {
                 submitData()
             }
         }
@@ -78,24 +75,15 @@ class RegisterViewModel @Inject constructor(
         state = state.copy(passwordError = passwordResult.errorMessage)
     }
 
-    private fun validateRepeatedPassword() {
-        //val repeatedPasswordResult = validateRepeatedPassword.execute(state.password, state.repeatedPassword)
-        val repeatedPasswordResult =
-            authUseCases.validateRepeatedPassword.execute(state.password, state.repeatedPassword)
-        state = state.copy(repeatedPasswordError = repeatedPasswordResult.errorMessage)
-    }
 
     private fun submitData() {
         val emailResult = authUseCases.validateEmail.execute(state.email)
         val passwordResult = authUseCases.validatePassword.execute(state.password)
-        val repeatedPasswordResult = authUseCases.validateRepeatedPassword.execute(
-            state.password, state.repeatedPassword
-        )
+
 
         val hasError = listOf(
             emailResult,
             passwordResult,
-            repeatedPasswordResult,
 
             ).any { !it.successful }
 
@@ -103,7 +91,6 @@ class RegisterViewModel @Inject constructor(
             state = state.copy(
                 emailError = emailResult.errorMessage,
                 passwordError = passwordResult.errorMessage,
-                repeatedPasswordError = repeatedPasswordResult.errorMessage,
             )
             return
         }
@@ -112,42 +99,19 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
-//    private fun registerUser(email: String, password: String) = viewModelScope.launch {
-//        repository.registerUser(email = email, password = password).collectLatest { result ->
-//            when (result) {
-//                is Resource.Loading -> {
-//                }
-//
-//                is Resource.Success -> {
-//                    _registerState.update { it.copy(isSuccess = true) }
-//
-//                }
-//
-//                is Resource.Error -> {
-//                    _registerState.update { it.copy(isError = result.message) }
-//                }
-//            }
-//        }
-//    }
-    private fun registerUser(email: String, password: String) = viewModelScope.launch {
-        authUseCases.registerUser(email = email, password = password).collectLatest { result ->
+    private fun loginUser(email: String, password: String) = viewModelScope.launch {
+        repository.loginUser(email = email, password = password).collectLatest { result ->
             when (result) {
                 is Resource.Loading -> {
-
-                    Log.d("RegisterViewModel", "Resource.Loading")
                 }
 
                 is Resource.Success -> {
-                    _registerState.update {
-                        it.copy(isSuccess = true)
-                    }
-                        Log.d("RegisterViewModel", "Resource.Success")
+                    _loginState.update { it.copy(isSuccess = true) }
 
                 }
 
                 is Resource.Error -> {
-                    _registerState.update { it.copy(isError = result.message) }
-                    Log.d("RegisterViewModel", "Resource")
+                    _loginState.update { it.copy(isError = result.message) }
                 }
             }
         }
