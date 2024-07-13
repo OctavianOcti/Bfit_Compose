@@ -1,6 +1,14 @@
 package com.example.bfit.di
 
+import com.example.bfit.main.data.repository.AuthStateRepositoryImpl
+import com.example.bfit.main.domain.repository.AuthStateRepository
+import com.example.bfit.profile.data.ProfileRepositoryImpl
+import com.example.bfit.profile.domain.repository.ProfileRepository
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,5 +21,13 @@ object AppModule {
     @Provides
     @Singleton
     fun providesFirebaseAuth() = FirebaseAuth.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(impl: AuthStateRepositoryImpl): AuthStateRepository = impl
+
+    @Provides
+    @Singleton
+    fun providesFirebaseFirestore(): FirebaseFirestore = Firebase.firestore
 
 }

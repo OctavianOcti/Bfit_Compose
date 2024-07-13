@@ -26,7 +26,8 @@ import com.example.bfit.authentication.presentation.register.RegistrationFormEve
 
 @Composable
 fun LoginScreen(
-    navigateToRegister: () -> Unit = {}
+    navigateToRegister: () -> Unit = {},
+    navigateToMain: () -> Unit = {}
 ) {
     val viewModel: LoginViewModel = hiltViewModel()
     val state = viewModel.state
@@ -70,12 +71,13 @@ fun LoginScreen(
                     val authState = viewModel.loginState.value
                     when {
                         authState.isSuccess -> {
-                            Log.d("LoginScreen", "Logged successfully")
-                            Toast.makeText(
-                                context,
-                                "Login successful",
-                                Toast.LENGTH_LONG
-                            ).show()
+//                            Log.d("LoginScreen", "Logged successfully")
+//                            Toast.makeText(
+//                                context,
+//                                "Login successful",
+//                                Toast.LENGTH_LONG
+//                            ).show()
+                           // navigateToMain()
                         }
 
                         authState.isError != null -> {
@@ -113,6 +115,7 @@ fun LoginScreen(
                     "Login successfully",
                     Toast.LENGTH_LONG
                 ).show()
+                navigateToMain()
             }
             loginState.isError != null -> {
                 Toast.makeText(
@@ -191,7 +194,7 @@ fun LoginScreen(
             )
         }
 
-        TextButton(onClick = { navigateToRegister()}) {
+        TextButton(onClick = { navigateToRegister() }) {
             Text(
                 text = stringResource(id = R.string.click_to_register),
                 color = colorResource(id = R.color.blue_shade ),

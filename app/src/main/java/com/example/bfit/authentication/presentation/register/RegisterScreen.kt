@@ -43,6 +43,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.bfit.R
 import com.example.bfit.authentication.presentation.components.CustomOutlinedTextField
 import com.google.firebase.auth.AuthResult
@@ -97,10 +100,25 @@ fun RegisterScreen(
             }
         }
     }
+
+
+//    val lifecycleOwner = LocalLifecycleOwner.current
+//    LaunchedEffect(lifecycleOwner.lifecycle) {
+//        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+//            viewModel.validationEvents.collect() {event ->
+//                when (event){
+//                    is RegisterViewModel.ValidationEvent.Success -> {
+//                        viewModel.onEvent(RegistrationFormEvent.Register)
+//                    }
+//                }
+//            }
+//        }
+//
+//    }
+
     LaunchedEffect(key1 = registerState) {
         when {
-            registerState.isLoading -> {
-            }
+            registerState.isLoading -> {}
 
             registerState.isSuccess -> {
                 Toast.makeText(

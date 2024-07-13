@@ -9,21 +9,28 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.bfit.authentication.presentation.login.LoginScreen
 import com.example.bfit.authentication.presentation.register.RegisterScreen
+import com.example.bfit.main.MainScreen
 
 @Composable
 fun MyNavigationHost(
-    navController: NavHostController = rememberNavController()
-){
-    NavHost(navController = navController, startDestination = Login ){
+    navController: NavHostController = rememberNavController(),
+    isUserLoggedIn: Boolean
+) {
+    NavHost(navController = navController, startDestination = if(isUserLoggedIn) Main else Login) {
         composable<Login> {
-            LoginScreen {
-                navController.navigate(Register)
-            }
+          LoginScreen({ navController.navigate(Register) }, { navController.navigate(Main) })
         }
         composable<Register> {
-        RegisterScreen{
-            navController.navigate(Login)
+            RegisterScreen {
+                navController.navigate(Login)
+            }
         }
+        composable<Main> {
+            MainScreen {
+                navController.navigate(Login)
+            }
+
+
         }
     }
 

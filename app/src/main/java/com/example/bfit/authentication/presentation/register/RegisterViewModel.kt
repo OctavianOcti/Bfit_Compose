@@ -33,7 +33,7 @@ class RegisterViewModel @Inject constructor(
     private var _registerState = MutableStateFlow(value = AuthState())
     val registerState = _registerState.asStateFlow()
 
-    var state by mutableStateOf(RegisterFormState())
+     var state by mutableStateOf(RegisterFormState())
         private set
 
     private val validationEventChannel = Channel<ValidationEvent>()

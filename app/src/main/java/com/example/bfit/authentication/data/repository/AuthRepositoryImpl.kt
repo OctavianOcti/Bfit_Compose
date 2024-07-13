@@ -35,15 +35,6 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-//    override fun registerUser(email: String, password: String): Flow<Resource<Unit>> = flow {
-//        emit(Resource.Loading())
-//        try {
-//            val auth = FirebaseAuth.getInstance()
-//            val result = auth.createUserWithEmailAndPassword(email, password).await()
-//            emit(Resource.Success(Unit))
-//        } catch (e: Exception) {
-//            // Emit error message if registration fails
-//            emit(Resource.Error(e.message ?: "An unknown error occurred"))
-//        }
-//    }
+
+
 }
