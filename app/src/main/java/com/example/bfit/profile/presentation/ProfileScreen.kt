@@ -1,12 +1,18 @@
 package com.example.bfit.profile.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -19,23 +25,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bfit.R
 import com.example.bfit.main.domain.model.DataProvider
 import com.example.bfit.main.domain.model.UserInfo
+import kotlinx.coroutines.launch
 
-
+@Preview(showBackground = true)
 @Composable
 fun ProfileScreen() {
     val scrollState = rememberScrollState()
@@ -183,78 +193,148 @@ fun UserInfoDetail(iconResId: Int, label: String, value: String, unit: String) {
     }
 }
 
-@Composable
-fun CustomizationSection() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 10.dp, vertical = 20.dp)
-    ) {
-        Text(
-            text = stringResource(id = R.string.customization),
-            fontWeight = FontWeight.Bold,
-            color = colorResource(id = R.color.orange),
-            fontSize = 20.sp,
-            modifier = Modifier.padding(bottom = 10.dp)
-        )
+//@Composable
+//fun CustomizationSection() {
+//    Column(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(horizontal = 10.dp, vertical = 20.dp)
+//    ) {
+//        Text(
+//            text = stringResource(id = R.string.customization),
+//            fontWeight = FontWeight.Bold,
+//            color = colorResource(id = R.color.orange),
+//            fontSize = 20.sp,
+//            modifier = Modifier.padding(bottom = 10.dp)
+//        )
+//
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .clip(RoundedCornerShape(8.dp))
+//                .background(colorResource(id = R.color.ic_bfit_logo_background))
+//                .padding(10.dp)
+//        ) {
+//            Column {
+//                CustomizationDetail(
+//                    iconResId = R.drawable.user_yellow_icon,
+//                    label = stringResource(id = R.string.personal_details),
+//                    description = "",
+//                    onClick = {}
+//                )
+//                HorizontalDivider(
+//                    modifier = Modifier.padding(vertical = 10.dp),
+//                    thickness = 1.dp,
+//                    color = Color.White
+//                )
+//                CustomizationDetail(
+//                    iconResId = R.drawable.baseline_edit_24,
+//                    label = stringResource(id = R.string.adjust_calories),
+//                    description = stringResource(id = R.string.protein_carbs_and_fat),
+//                    onClick = {}
+//                )
+//                HorizontalDivider(
+//                    modifier = Modifier.padding(vertical = 10.dp),
+//                    thickness = 1.dp,
+//                    color = Color.White
+//                )
+//                CustomizationDetail(
+//                    iconResId = R.drawable.baseline_set_meal_24,
+//                    label = stringResource(id = R.string.adjust_meals_and_food),
+//                    description = "",
+//                    onClick = {}
+//                )
+//                HorizontalDivider(
+//                    modifier = Modifier.padding(vertical = 10.dp),
+//                    thickness = 1.dp,
+//                    color = Color.White
+//                )
+//                CustomizationDetail(
+//                    iconResId = R.drawable.id_diary_yellow,
+//                    label = stringResource(id = R.string.track_food),
+//                    description = "",
+//                    onClick = {}
+//                )
+//            }
+//        }
+//    }
+//}
+//
+//@Composable
+//fun CustomizationDetail(iconResId: Int, label: String, description: String, onClick: () -> Unit) {
+//    Row(
+//        verticalAlignment = Alignment.CenterVertically,
+//        modifier = Modifier.padding(vertical = 8.dp)
+//    ) {
+//        Image(
+//            painter = painterResource(id = iconResId),
+//            contentDescription = null,
+//            modifier = Modifier
+//                .size(40.dp)
+//                .padding(end = 20.dp)
+//        )
+//        Column(modifier = Modifier.weight(1f)) {
+//            Text(
+//                text = label,
+//                color = Color(0xFFBDBDBD),
+//                fontSize = 18.sp,
+//                modifier = Modifier.padding(bottom = 5.dp)
+//            )
+//            if (description.isNotEmpty()) {
+//                Text(
+//                    text = description,
+//                    color = Color(0xFFBDBDBD),
+//                    fontSize = 14.sp
+//                )
+//            }
+//        }
+//        Text(
+//            text = ">",
+//            color = Color.White,
+//            fontSize = 20.sp,
+//            modifier = Modifier.padding(start = 25.dp)
+//        )
+//    }
+//}
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
-                .background(colorResource(id = R.color.ic_bfit_logo_background))
-                .padding(10.dp)
-        ) {
-            Column {
-                CustomizationDetail(
-                    iconResId = R.drawable.user_yellow_icon,
-                    label = stringResource(id = R.string.personal_details),
-                    description = "",
-                    onClick = {}
-                )
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 10.dp),
-                    thickness = 1.dp,
-                    color = Color.White
-                )
-                CustomizationDetail(
-                    iconResId = R.drawable.baseline_edit_24,
-                    label = stringResource(id = R.string.adjust_calories),
-                    description = stringResource(id = R.string.protein_carbs_and_fat),
-                    onClick = {}
-                )
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 10.dp),
-                    thickness = 1.dp,
-                    color = Color.White
-                )
-                CustomizationDetail(
-                    iconResId = R.drawable.baseline_set_meal_24,
-                    label = stringResource(id = R.string.adjust_meals_and_food),
-                    description = "",
-                    onClick = {}
-                )
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 10.dp),
-                    thickness = 1.dp,
-                    color = Color.White
-                )
-                CustomizationDetail(
-                    iconResId = R.drawable.id_diary_yellow,
-                    label = stringResource(id = R.string.track_food),
-                    description = "",
-                    onClick = {}
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun CustomizationDetail(iconResId: Int, label: String, description: String, onClick: () -> Unit) {
+    val shakeOffset = remember { Animatable(0f) }
+    val coroutineScope = rememberCoroutineScope()
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 8.dp)
+        modifier = Modifier
+            .padding(vertical = 8.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    coroutineScope.launch {
+                        shakeOffset.animateTo(
+                            targetValue = 15f,
+                            animationSpec = tween(durationMillis = 50)
+                        )
+                        shakeOffset.animateTo(
+                            targetValue = -15f,
+                            animationSpec = tween(durationMillis = 50)
+                        )
+                        shakeOffset.animateTo(
+                            targetValue = 10f,
+                            animationSpec = tween(durationMillis = 50)
+                        )
+                        shakeOffset.animateTo(
+                            targetValue = -10f,
+                            animationSpec = tween(durationMillis = 50)
+                        )
+                        shakeOffset.animateTo(
+                            targetValue = 0f,
+                            animationSpec = tween(durationMillis = 50)
+                        )
+                    }
+                    onClick()
+                })
+            }
+            .offset(x = shakeOffset.value.dp)
     ) {
         Image(
             painter = painterResource(id = iconResId),
@@ -286,6 +366,76 @@ fun CustomizationDetail(iconResId: Int, label: String, description: String, onCl
         )
     }
 }
+
+@Composable
+fun CustomizationSection() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp, vertical = 20.dp)
+    ) {
+        Text(
+            text = stringResource(id = R.string.customization),
+            fontWeight = FontWeight.Bold,
+            color = colorResource(id = R.color.orange),
+            fontSize = 20.sp,
+            modifier = Modifier.padding(bottom = 10.dp)
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+                .background(colorResource(id = R.color.ic_bfit_logo_background))
+                .padding(10.dp)
+        ) {
+            Column {
+                CustomizationDetail(
+                    iconResId = R.drawable.user_yellow_icon,
+                    label = stringResource(id = R.string.personal_details),
+                    description = "",
+                    onClick = { /* Handle Personal Details click */ }
+                )
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 10.dp),
+                    thickness = 1.dp,
+                    color = Color.White
+                )
+                CustomizationDetail(
+                    iconResId = R.drawable.baseline_edit_24,
+                    label = stringResource(id = R.string.adjust_calories),
+                    description = stringResource(id = R.string.protein_carbs_and_fat),
+                    onClick = { /* Handle Adjust Calories click */ }
+                )
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 10.dp),
+                    thickness = 1.dp,
+                    color = Color.White
+                )
+                CustomizationDetail(
+                    iconResId = R.drawable.baseline_set_meal_24,
+                    label = stringResource(id = R.string.adjust_meals_and_food),
+                    description = "",
+                    onClick = { /* Handle Adjust Meals and Food click */ }
+                )
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 10.dp),
+                    thickness = 1.dp,
+                    color = Color.White
+                )
+                CustomizationDetail(
+                    iconResId = R.drawable.id_diary_yellow,
+                    label = stringResource(id = R.string.track_food),
+                    description = "",
+                    onClick = { /* Handle Track Food click */ }
+                )
+            }
+        }
+    }
+}
+
+
+
 @Composable
 fun LogoSection() {
     Box(

@@ -10,3 +10,9 @@ object Login
 
 @Serializable
 object Main
+
+@Serializable
+object Home
+
+@Serializable
+object Profile

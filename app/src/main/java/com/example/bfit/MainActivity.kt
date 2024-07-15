@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import com.example.bfit.authentication.presentation.login.LoginScreen
+import com.example.bfit.authentication.presentation.navigation.Login
 import com.example.bfit.authentication.presentation.navigation.Main
 import com.example.bfit.authentication.presentation.navigation.MyNavigationHost
 
@@ -30,6 +31,7 @@ class MainActivity : ComponentActivity() {
             } else {
                MyNavigationHost(isUserLoggedIn = false)
             }
+
         }
     }
 }

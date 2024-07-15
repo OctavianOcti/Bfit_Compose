@@ -8,8 +8,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import com.example.bfit.R
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -17,6 +21,7 @@ import kotlinx.coroutines.launch
 fun AppTopAppBar(drawerState: DrawerState) {
     val scope = rememberCoroutineScope()
     TopAppBar(
+
         title = { Text(text = "Bfit") },
         navigationIcon = {
             IconButton(onClick = {
@@ -24,6 +29,10 @@ fun AppTopAppBar(drawerState: DrawerState) {
             }) {
                 Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
             }
-        }
-    )
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = colorResource(id = R.color.ic_bfit_logo_background),
+            titleContentColor = Color.White,
+            navigationIconContentColor = Color.White
+        ))
 }
