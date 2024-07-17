@@ -1,10 +1,9 @@
-package com.example.bfit.profile.data
+package com.example.bfit.navdrawerfeatures.profile.data.repository
 
 import com.example.bfit.main.domain.model.UserInfo
-import com.example.bfit.profile.domain.repository.ProfileRepository
+import com.example.bfit.navdrawerfeatures.profile.domain.repository.ProfileRepository
 import com.example.bfit.util.Resource
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.auth.User
 import com.google.firebase.firestore.toObjects
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow

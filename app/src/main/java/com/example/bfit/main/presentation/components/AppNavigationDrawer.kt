@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.bfit.R
-import com.example.bfit.authentication.presentation.navigation.Home
-import com.example.bfit.authentication.presentation.navigation.Profile
+import com.example.bfit.util.navigation.Home
+import com.example.bfit.util.navigation.Profile
 import com.example.bfit.main.presentation.utils.NavigationItem
 import kotlinx.coroutines.launch
 
@@ -36,6 +36,7 @@ fun AppNavigationDrawer(
     onItemSelected: (Int) -> Unit,
     drawerState: DrawerState,
     navigateToLogin: () -> Unit,
+    navigateToGoals: () -> Unit,
     onLogout: () -> Unit,
     navController: NavController,
     selectedBottomItemIndex: Int,
@@ -57,7 +58,7 @@ fun AppNavigationDrawer(
                             onLogout() // Call the logout callback
                             navigateToLogin()
                         }
-                        if (item.title == "Profile") {
+                        else if (item.title == "Profile") {
                             onItemSelected(index)
                             onBottomItemSelected(index)
                             navController.navigate(Profile) {
@@ -68,7 +69,7 @@ fun AppNavigationDrawer(
                                 restoreState = true
                             }
                         }
-                        if (item.title == "Home") {
+                        else  if (item.title == "Home") {
                             onItemSelected(index)
                             onBottomItemSelected(index)
                             navController.navigate(Home) {
@@ -78,7 +79,11 @@ fun AppNavigationDrawer(
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        } else {
+                        }
+                        else if  (item.title == "Goals") {
+                            navigateToGoals()
+                        }
+                        else {
                             onItemSelected(index)
                         }
                         scope.launch { drawerState.close() }

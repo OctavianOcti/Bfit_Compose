@@ -23,41 +23,6 @@ object AuthModule {
     fun providesAuthRepositoryImpl(firebaseAuth: FirebaseAuth): AuthRepository {
         return AuthRepositoryImpl(firebaseAuth = firebaseAuth)
     }
-//
-//    @Provides
-//    fun provideValidateEmail(): ValidateEmail {
-//        return ValidateEmail(AndroidEmailPatternValidator())
-//    }
-//
-//    @Provides
-//    fun provideValidatePassword(): ValidatePassword {
-//        return ValidatePassword(AndroidPasswordPatternValidator())
-//    }
-//
-//    @Provides
-//    fun provideValidateRepeatedPassword(): ValidateRepeatedPassword {
-//        return ValidateRepeatedPassword()
-//    }
-//
-//    @Provides
-//    fun provideRegisterUserUseCase(
-//        repository: AuthRepository
-//    ): RegisterUser {
-//        return RegisterUser(repository)
-//    }
-
-//    @Provides
-//    fun provideEmailPatternValidator(): EmailPatternValidator {
-//        return AndroidEmailPatternValidator()
-//    }
-//    @Provides
-//    fun provideValidateEmail(validator: EmailPatternValidator): ValidateEmail {
-//        return ValidateEmail(validator)
-//    }
-//    @Provides
-//    fun provideValidateRepeatedPassword(): ValidateRepeatedPassword {
-//        return ValidateRepeatedPassword();
-//    }
 
     @Provides
     fun provideAuthUseCases(repository: AuthRepository): AuthUseCases {

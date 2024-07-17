@@ -11,10 +11,10 @@ class UserInfo {
     private var gender = ""
     private var activityLevel = ""
     private var goal = ""
-    private var age= 0
-    private var BMR= 0
+    private var age = 0
+    private var BMR = 0
     private var calories = 0
-    private var weight= 0.0f
+    private var weight = 0.0f
     private var height = 0.0f
     private var protein = 0
     private var fat = 0
@@ -23,9 +23,23 @@ class UserInfo {
     private var carbPercentage = 0.0f
     private var fatPercentage = 0.0f
 
-    constructor() {}
+    fun isEmpty(): Boolean {
+        return gender.isEmpty() && activityLevel.isEmpty() && goal.isEmpty()
+                && age == 0 && BMR == 0 && calories == 0 && weight == 0.0f
+                && height == 0.0f && protein == 0 && fat == 0 && carb == 0
+                && proteinPercentage == 0.0f && carbPercentage == 0.0f && fatPercentage == 0.0f
+    }
 
-    constructor(gender: String, activityLevel: String, goal: String, age: Int, weight: Float, height: Float) {
+    constructor()
+
+    constructor(
+        gender: String,
+        activityLevel: String,
+        goal: String,
+        age: Int,
+        weight: Float,
+        height: Float
+    ) {
         this.gender = gender
         this.activityLevel = activityLevel
         this.goal = goal
@@ -64,6 +78,7 @@ class UserInfo {
                 fatPercentage = 20f
                 setMacros()
             }
+
             "Lose 0.75kg per week" -> {
                 calories -= 825
                 proteinPercentage = 40f
@@ -71,6 +86,7 @@ class UserInfo {
                 fatPercentage = 20f
                 setMacros()
             }
+
             "Lose 0.5kg per week" -> {
                 calories -= 550
                 proteinPercentage = 40f
@@ -78,12 +94,14 @@ class UserInfo {
                 fatPercentage = 20f
                 setMacros()
             }
+
             "Maintain current weight" -> {
                 proteinPercentage = 30f
                 fatPercentage = 30f
                 carbPercentage = 40f
                 setMacros()
             }
+
             "Gain 0.25kg per week" -> {
                 calories += 275
                 proteinPercentage = 30f
@@ -91,6 +109,7 @@ class UserInfo {
                 carbPercentage = 40f
                 setMacros()
             }
+
             "Gain 0.5kg per week" -> {
                 calories += 550
                 proteinPercentage = 30f
@@ -125,6 +144,7 @@ class UserInfo {
                 "fatPercentage=$fatPercentage" +
                 '}'
     }
+
     fun getGender(): String {
         return gender
     }
@@ -180,6 +200,7 @@ class UserInfo {
     fun getFatPercentage(): Float {
         return fatPercentage
     }
+
     fun setGender(gender: String) {
         this.gender = gender
     }

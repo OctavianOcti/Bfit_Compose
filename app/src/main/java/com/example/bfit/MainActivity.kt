@@ -8,9 +8,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import com.example.bfit.authentication.presentation.login.LoginScreen
-import com.example.bfit.authentication.presentation.navigation.Login
-import com.example.bfit.authentication.presentation.navigation.Main
-import com.example.bfit.authentication.presentation.navigation.MyNavigationHost
+import com.example.bfit.util.navigation.Login
+import com.example.bfit.util.navigation.Main
+import com.example.bfit.util.navigation.MyNavigationHost
 
 import com.example.bfit.main.MainScreen
 import com.example.bfit.main.domain.model.DataProvider

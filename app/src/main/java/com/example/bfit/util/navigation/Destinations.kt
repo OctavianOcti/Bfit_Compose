@@ -1,4 +1,4 @@
-package com.example.bfit.authentication.presentation.navigation
+package com.example.bfit.util.navigation
 
 import kotlinx.serialization.Serializable
 
@@ -16,3 +16,7 @@ object Home
 
 @Serializable
 object Profile
+
+@Serializable
+object Goals
+

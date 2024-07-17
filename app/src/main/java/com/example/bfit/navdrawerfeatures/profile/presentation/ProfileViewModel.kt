@@ -1,4 +1,4 @@
-package com.example.bfit.profile.presentation
+package com.example.bfit.navdrawerfeatures.profile.presentation
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bfit.main.domain.model.DataProvider
 import com.example.bfit.main.domain.model.UserInfo
-import com.example.bfit.profile.domain.repository.ProfileRepository
+import com.example.bfit.navdrawerfeatures.profile.domain.repository.ProfileRepository
 import com.example.bfit.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn

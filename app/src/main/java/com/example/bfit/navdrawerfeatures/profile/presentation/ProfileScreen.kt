@@ -1,4 +1,4 @@
-package com.example.bfit.profile.presentation
+package com.example.bfit.navdrawerfeatures.profile.presentation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
@@ -43,11 +43,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bfit.R
 import com.example.bfit.main.domain.model.DataProvider
 import com.example.bfit.main.domain.model.UserInfo
+import com.example.bfit.navdrawerfeatures.common.presentation.FooterSection
+import com.example.bfit.navdrawerfeatures.common.presentation.LogoSection
 import kotlinx.coroutines.launch
 
-@Preview(showBackground = true)
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    navigateToGoals : () -> Unit = {}
+) {
     val scrollState = rememberScrollState()
     val viewModel : ProfileViewModel = hiltViewModel()
     val userInfo = viewModel.profile.value
@@ -61,7 +64,7 @@ fun ProfileScreen() {
             .verticalScroll(scrollState)
     ) {
         UserInfoSection(userInfo)
-        CustomizationSection()
+        CustomizationSection(navigateToGoals)
         LogoSection()
         FooterSection()
     }
@@ -193,110 +196,6 @@ fun UserInfoDetail(iconResId: Int, label: String, value: String, unit: String) {
     }
 }
 
-//@Composable
-//fun CustomizationSection() {
-//    Column(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = 10.dp, vertical = 20.dp)
-//    ) {
-//        Text(
-//            text = stringResource(id = R.string.customization),
-//            fontWeight = FontWeight.Bold,
-//            color = colorResource(id = R.color.orange),
-//            fontSize = 20.sp,
-//            modifier = Modifier.padding(bottom = 10.dp)
-//        )
-//
-//        Box(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .clip(RoundedCornerShape(8.dp))
-//                .background(colorResource(id = R.color.ic_bfit_logo_background))
-//                .padding(10.dp)
-//        ) {
-//            Column {
-//                CustomizationDetail(
-//                    iconResId = R.drawable.user_yellow_icon,
-//                    label = stringResource(id = R.string.personal_details),
-//                    description = "",
-//                    onClick = {}
-//                )
-//                HorizontalDivider(
-//                    modifier = Modifier.padding(vertical = 10.dp),
-//                    thickness = 1.dp,
-//                    color = Color.White
-//                )
-//                CustomizationDetail(
-//                    iconResId = R.drawable.baseline_edit_24,
-//                    label = stringResource(id = R.string.adjust_calories),
-//                    description = stringResource(id = R.string.protein_carbs_and_fat),
-//                    onClick = {}
-//                )
-//                HorizontalDivider(
-//                    modifier = Modifier.padding(vertical = 10.dp),
-//                    thickness = 1.dp,
-//                    color = Color.White
-//                )
-//                CustomizationDetail(
-//                    iconResId = R.drawable.baseline_set_meal_24,
-//                    label = stringResource(id = R.string.adjust_meals_and_food),
-//                    description = "",
-//                    onClick = {}
-//                )
-//                HorizontalDivider(
-//                    modifier = Modifier.padding(vertical = 10.dp),
-//                    thickness = 1.dp,
-//                    color = Color.White
-//                )
-//                CustomizationDetail(
-//                    iconResId = R.drawable.id_diary_yellow,
-//                    label = stringResource(id = R.string.track_food),
-//                    description = "",
-//                    onClick = {}
-//                )
-//            }
-//        }
-//    }
-//}
-//
-//@Composable
-//fun CustomizationDetail(iconResId: Int, label: String, description: String, onClick: () -> Unit) {
-//    Row(
-//        verticalAlignment = Alignment.CenterVertically,
-//        modifier = Modifier.padding(vertical = 8.dp)
-//    ) {
-//        Image(
-//            painter = painterResource(id = iconResId),
-//            contentDescription = null,
-//            modifier = Modifier
-//                .size(40.dp)
-//                .padding(end = 20.dp)
-//        )
-//        Column(modifier = Modifier.weight(1f)) {
-//            Text(
-//                text = label,
-//                color = Color(0xFFBDBDBD),
-//                fontSize = 18.sp,
-//                modifier = Modifier.padding(bottom = 5.dp)
-//            )
-//            if (description.isNotEmpty()) {
-//                Text(
-//                    text = description,
-//                    color = Color(0xFFBDBDBD),
-//                    fontSize = 14.sp
-//                )
-//            }
-//        }
-//        Text(
-//            text = ">",
-//            color = Color.White,
-//            fontSize = 20.sp,
-//            modifier = Modifier.padding(start = 25.dp)
-//        )
-//    }
-//}
-
 
 @Composable
 fun CustomizationDetail(iconResId: Int, label: String, description: String, onClick: () -> Unit) {
@@ -368,7 +267,7 @@ fun CustomizationDetail(iconResId: Int, label: String, description: String, onCl
 }
 
 @Composable
-fun CustomizationSection() {
+fun CustomizationSection(navigateToGoals: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -394,7 +293,7 @@ fun CustomizationSection() {
                     iconResId = R.drawable.user_yellow_icon,
                     label = stringResource(id = R.string.personal_details),
                     description = "",
-                    onClick = { /* Handle Personal Details click */ }
+                    onClick = { navigateToGoals()}
                 )
                 HorizontalDivider(
                     modifier = Modifier.padding(vertical = 10.dp),
@@ -435,41 +334,5 @@ fun CustomizationSection() {
 }
 
 
-
-@Composable
-fun LogoSection() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 50.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(R.drawable.logo_app),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(200.dp)
-                .clip(CircleShape)
-
-        )
-    }
-}
-@Composable
-fun FooterSection() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(colorResource(id = R.color.darkGrey))
-            .padding(vertical = 40.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "",
-            color = Color.White,
-            fontSize = 25.sp
-        )
-    }
-}
 
 

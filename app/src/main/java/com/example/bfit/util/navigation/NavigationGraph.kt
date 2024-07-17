@@ -1,8 +1,6 @@
-package com.example.bfit.authentication.presentation.navigation
+package com.example.bfit.util.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -10,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.bfit.authentication.presentation.login.LoginScreen
 import com.example.bfit.authentication.presentation.register.RegisterScreen
 import com.example.bfit.main.MainScreen
+import com.example.bfit.navdrawerfeatures.goals.presentation.GoalsScreen
 
 @Composable
 fun MyNavigationHost(
@@ -23,15 +22,22 @@ fun MyNavigationHost(
         composable<Register> {
             RegisterScreen {
                 navController.navigate(Login)
+
             }
         }
         composable<Main> {
-            MainScreen {
-                navController.navigate(Login)
-            }
-
-
+            MainScreen (
+                {navController.navigate(Login)}, {navController.navigate(Goals)}
+            )
         }
+        composable<Goals> {
+            GoalsScreen{
+                navController.navigate(Main){
+                    launchSingleTop = true
+                }
+            }
+        }
+
     }
 
 }

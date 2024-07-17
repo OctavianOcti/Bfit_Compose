@@ -1,9 +1,9 @@
-package com.example.bfit.profile
+package com.example.bfit.navdrawerfeatures.goals.presentation
 
-data class ProfileState(
-    val email: String = "",
-    val age : String = "",
+data class GoalsState(
+
     val gender: String = "",
+    val age : String = "",
     val weight: String = "",
     val height: String = "",
     val goal: String = "",
