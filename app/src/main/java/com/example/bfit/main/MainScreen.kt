@@ -54,7 +54,9 @@ import com.example.bfit.navdrawerfeatures.profile.presentation.ProfileScreen
 @Composable
 fun MainScreen(
     navigateToLogin : () -> Unit = {},
-    navigateToGoals : () -> Unit = {}
+    navigateToGoals : () -> Unit = {},
+    navigateToMacros: (List<String>) -> Unit = {},
+    navigateDoDiary: () -> Unit = {}
 
 ) {
     val authViewModel: AuthViewModel = hiltViewModel()
@@ -108,6 +110,7 @@ fun MainScreen(
                     drawerState = drawerState,
                     navigateToLogin = { navigateToLogin() },
                     navigateToGoals = {navigateToGoals()},
+                    navigateToDiary = {navigateDoDiary()},
                     onLogout = { authViewModel.signOut() },
                     navController = navController,
                     selectedBottomItemIndex = selectedBottomItemIndex,
@@ -176,8 +179,13 @@ fun MainScreen(
                     composable<Home> {
                         HomeScreen()
                     }
+//                    composable<Profile> {
+//                        ProfileScreen { navigateToGoals() }
+//                    }
                     composable<Profile> {
-                        ProfileScreen { navigateToGoals() }
+                        ProfileScreen(
+                            {navigateToGoals()}, {navigateToMacros(it)}, {navigateDoDiary()}
+                        )
                     }
                 }
             }

@@ -37,6 +37,7 @@ fun AppNavigationDrawer(
     drawerState: DrawerState,
     navigateToLogin: () -> Unit,
     navigateToGoals: () -> Unit,
+    navigateToDiary: () -> Unit,
     onLogout: () -> Unit,
     navController: NavController,
     selectedBottomItemIndex: Int,
@@ -82,6 +83,9 @@ fun AppNavigationDrawer(
                         }
                         else if  (item.title == "Goals") {
                             navigateToGoals()
+                        }
+                        else if(item.title == "Diary"){
+                            navigateToDiary()
                         }
                         else {
                             onItemSelected(index)

@@ -150,6 +150,7 @@ class GoalsViewModel @Inject constructor(
         return goalsUseCases.validateWeight.execute(weight)
     }
 
+
     sealed class ValidationEvent {
         object Success : ValidationEvent()
     }

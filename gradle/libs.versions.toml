@@ -1,5 +1,6 @@
 [versions]
 agp = "8.4.1"
+constraintlayoutCompose = "1.0.1"
 firebaseBom = "33.1.1"
 hiltAndroid = "2.51"
 hiltAndroidCompiler = "2.51"
@@ -21,6 +22,7 @@ constraintlayout = "2.1.4"
 firebaseFirestoreKtx = "25.0.0"
 
 [libraries]
+androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }

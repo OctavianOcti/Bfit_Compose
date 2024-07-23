@@ -1,5 +1,9 @@
 package com.example.bfit.navdrawerfeatures.di
 
+import com.example.bfit.navdrawerfeatures.adjust_calories.domain.MacrosUseCases
+import com.example.bfit.navdrawerfeatures.adjust_calories.domain.GetClosestDivisibleValue
+import com.example.bfit.navdrawerfeatures.adjust_calories.domain.ValidateCalorieAmount
+import com.example.bfit.navdrawerfeatures.adjust_calories.domain.ValidateMacrosPercentages
 import com.example.bfit.navdrawerfeatures.goals.domain.GoalsUseCases
 import com.example.bfit.navdrawerfeatures.goals.domain.ValidateAge
 import com.example.bfit.navdrawerfeatures.goals.domain.ValidateHeight
@@ -11,7 +15,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -24,6 +27,15 @@ object UseCaseModule {
             validateWeight = ValidateWeight(AndroidWeightPatternValidator()),
             validateHeight = ValidateHeight(AndroidHeightPatternValidator()),
             validateInputData = ValidateInputData()
+        )
+    }
+
+    @Provides
+    fun provideAdjustMacrosUseCases(): MacrosUseCases {
+        return MacrosUseCases(
+            validateCalorieAmount = ValidateCalorieAmount(),
+            validateMacrosPercentages = ValidateMacrosPercentages(),
+            getClosestDivisibleValue = GetClosestDivisibleValue()
         )
     }
 }

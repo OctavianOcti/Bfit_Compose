@@ -166,7 +166,8 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp)
-                .padding(horizontal = 5.dp, vertical = 16.dp),
+                .padding(horizontal = 5.dp, vertical = 16.dp)
+                .padding(start = 10.dp, end = 10.dp)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -182,7 +183,8 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp)
-                .padding(horizontal = 5.dp, vertical = 16.dp),
+                .padding(horizontal = 5.dp, vertical = 16.dp)
+                .padding(start = 10.dp, end = 10.dp)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -198,7 +200,8 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp)
-                .padding(horizontal = 5.dp, vertical = 16.dp),
+                .padding(horizontal = 5.dp, vertical = 16.dp)
+                .padding(start = 10.dp, end = 10.dp)
         )
 
         Spacer(modifier = Modifier.height(8.dp))

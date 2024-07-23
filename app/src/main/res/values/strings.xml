@@ -72,6 +72,7 @@
     <string name="enter_food_name">Enter food name</string>
     <string name="serving_size">Serving size:</string>
     <string name="macros">Macros</string>
+    <string name="macrosTip">You must press the "Save Button" in order to keep the changes!</string>
     <string name="GoalsTip">There is nothing inaccurate about the Activity Levels calorie information. However, the explanation leaves many people confused. In addition to being confused people can easily assume their activity level is higher than the reality. For example, if you train 6–7 days per week and have a desk job, you could be a "Sedentary"!</string>
     <string name="proteinslider">proteinSlider</string>
     <string name="carbslider">carbSlider</string>

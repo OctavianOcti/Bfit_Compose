@@ -1,8 +1,12 @@
 package com.example.bfit.navdrawerfeatures.goals.presentation
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,12 +49,18 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bfit.R
 import com.example.bfit.navdrawerfeatures.common.presentation.LogoSection
+import com.example.bfit.navdrawerfeatures.common.presentation.AlertDialogWarning
+import com.example.bfit.navdrawerfeatures.common.presentation.TextInputDialog
 import com.example.bfit.util.Constants
+import kotlinx.coroutines.launch
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GoalsScreen(
-    navigateToMain: () -> Unit = {}
+    navigateToMain: () -> Unit = {},
+    navigateToMacros: (List<String>) -> Unit = {},
 ) {
+    Log.d("GoalsScreen","Recompose")
     val viewModel: GoalsViewModel = hiltViewModel()
     val state = viewModel.state
     val context = LocalContext.current
@@ -184,7 +196,7 @@ fun GoalsScreen(
                     onHeightClick = { showInputDialog("Enter your height") }
                 )
 
-                LayoutForGoals()
+                LayoutForGoals(navigateToMacros,viewModel,context,state)
 
                 TipsLayout()
 
@@ -247,6 +259,9 @@ fun GoalsScreen(
         },
         onDismissRequest = {
             inputDialogState.value = false
+            inputTextAge.value= ""
+            inputTextWeight.value=""
+            inputTextHeight.value= ""
         },
         onConfirm = {
             when (inputDialogTitle.value) {
@@ -254,6 +269,9 @@ fun GoalsScreen(
                 "Enter your weight" -> viewModel.onEvent(GoalsEvent.WeightChanged(inputTextWeight.value))
                 "Enter your height" -> viewModel.onEvent(GoalsEvent.HeightChanged(inputTextHeight.value))
             }
+            inputTextAge.value= ""
+            inputTextWeight.value=""
+            inputTextHeight.value= ""
             inputDialogState.value = false
         },
         visible = inputDialogState.value,
@@ -339,7 +357,24 @@ fun LayoutWithFields(
 }
 
 @Composable
-fun LayoutForGoals() {
+fun LayoutForGoals(
+    navigateToMacros: (List<String>) -> Unit,
+    viewModel: GoalsViewModel,
+    context: Context,
+    state: GoalsState) {
+    val warningDialogState = remember { mutableStateOf(false) }
+    val warningDialogTitle = remember { mutableStateOf("") }
+    val warningDialogShowCancelButton = remember { mutableStateOf(true) }
+    val warningDialogAlertMessage = remember { mutableStateOf("") }
+
+    val showWarningDialog: (String, Boolean, String?) -> Unit = { title, showCancel, message ->
+        warningDialogTitle.value = title
+        warningDialogShowCancelButton.value = showCancel
+        warningDialogAlertMessage.value = message ?: ""
+        warningDialogState.value = true
+    }
+    val coroutineScope = rememberCoroutineScope()
+    val shakeOffset = remember { Animatable(0f) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -356,6 +391,50 @@ fun LayoutForGoals() {
                 .fillMaxWidth()
                 .background(colorResource(id = R.color.ic_bfit_logo_background))
                 .padding(vertical = 10.dp)
+//                .clickable {
+//                    if (!viewModel.validateInputData(context, state.gender, state.weight, state.height, state.age, state.activityLevel, state.goal)) {
+//                        showWarningDialog(
+//                            "Please fill in all the required information!",
+//                            false,
+//                            "Please ensure all fields are filled out correctly before submitting."
+//                        )
+//                    }
+//                   else  navigateToMacros() }
+
+                .clickable {
+                    coroutineScope.launch {
+                        shakeOffset.animateTo(
+                            targetValue = 15f,
+                            animationSpec = tween(durationMillis = 50)
+                        )
+                        shakeOffset.animateTo(
+                            targetValue = -15f,
+                            animationSpec = tween(durationMillis = 50)
+                        )
+                        shakeOffset.animateTo(
+                            targetValue = 10f,
+                            animationSpec = tween(durationMillis = 50)
+                        )
+                        shakeOffset.animateTo(
+                            targetValue = -10f,
+                            animationSpec = tween(durationMillis = 50)
+                        )
+                        shakeOffset.animateTo(
+                            targetValue = 0f,
+                            animationSpec = tween(durationMillis = 50)
+                        )
+                    }
+                    if (!viewModel.validateInputData(context, state.gender, state.weight, state.height, state.age, state.activityLevel, state.goal)) {
+                        showWarningDialog(
+                            "Please fill in all the required information!",
+                            false,
+                            "Please ensure all fields are filled out correctly before submitting."
+                        )
+                    } else {
+                        navigateToMacros(listOf(state.gender,state.activityLevel,state.goal,state.age,state.weight,state.height))
+                    }
+                }
+                .offset(x = shakeOffset.value.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.calorie_carbs_protein_and_fat_goals),
@@ -377,6 +456,16 @@ fun LayoutForGoals() {
             )
         }
     }
+
+    AlertDialogWarning(
+        title = warningDialogTitle.value,
+        onDismissRequest = { warningDialogState.value = false },
+        onConfirm = {  },
+        //onConfirm = { Log.d("GoalsScreen","onConfirm")},
+        visible = warningDialogState.value,
+        showCancelButton = warningDialogShowCancelButton.value,
+        alertMessage = warningDialogAlertMessage.value
+    )
 }
 
 @Composable

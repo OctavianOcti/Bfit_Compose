@@ -51,6 +51,37 @@ class UserInfo {
         countCalories()
     }
 
+    constructor(
+        gender: String,
+        activityLevel: String,
+        goal: String,
+        age: Int,
+        weight: Float,
+        height: Float,
+        protein: Int,
+        carb:Int,
+        fat:Int,
+        proteinPercentage: Float,
+        carbPercentage: Float,
+        fatPercentage: Float,
+        calories:Int,
+    ){
+        this.gender = gender
+        this.activityLevel = activityLevel
+        this.goal = goal
+        this.age = age
+        this.weight = weight
+        this.height = height
+        this.protein=protein
+        this.carb=carb
+        this.fat=fat
+        this.proteinPercentage=proteinPercentage
+        this.carbPercentage=carbPercentage
+        this.fatPercentage=fatPercentage
+        this.calories = calories
+        determineBMR()
+    }
+
     private fun determineBMR() {
         BMR = when (gender) {
             "Male" -> (10 * weight + 6.25 * height - 5 * age + 5).toInt()

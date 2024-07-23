@@ -22,7 +22,6 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.bfit.R
 
 
-
 @Composable
 fun SingleChoiceDialogSample(
     title: String,
@@ -43,7 +42,12 @@ fun SingleChoiceDialogSample(
     if (visible) {
         AlertDialog(
             onDismissRequest = onDismissRequest,
-            title = { Text(text = title, color = colorResource(id = R.color.blueForDarkGrey)) },
+            title = {
+                Text(
+                    text = title,
+                    color = colorResource(id = R.color.blueForDarkGrey)
+                )
+            },
             text = {
                 Column(
                     modifier = Modifier

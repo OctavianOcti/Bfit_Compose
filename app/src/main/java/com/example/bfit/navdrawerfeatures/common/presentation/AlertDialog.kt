@@ -1,4 +1,4 @@
-package com.example.bfit.navdrawerfeatures.goals.presentation
+package com.example.bfit.navdrawerfeatures.common.presentation
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth

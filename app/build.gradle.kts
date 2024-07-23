@@ -86,6 +86,7 @@ dependencies {
 
     implementation(libs.material3)
     implementation(libs.androidx.material3.adaptive.navigation.suite)
+    implementation (libs.androidx.constraintlayout.compose)
 
 }
 kapt {

@@ -20,3 +20,9 @@ object Profile
 @Serializable
 object Goals
 
+@Serializable
+object Diary
+
+@Serializable
+data class AdjustMacros(val userInfo : List<String>)
+
