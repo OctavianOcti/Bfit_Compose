@@ -1,8 +1,13 @@
-package com.example.bfit.navdrawerfeatures.diary
+package com.example.bfit.navdrawerfeatures.diary.presentation
 
+import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -15,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -31,33 +35,55 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bfit.R
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
 
+
+@SuppressLint("SimpleDateFormat")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview(showBackground = true)
 fun DiaryScreen(
-    navigateToMain: ()->Unit = {}
+    navigateToMain: () -> Unit = {}
 ) {
+    val viewModel: DiaryViewModel = hiltViewModel()
+    val state = viewModel.state
+    val context = LocalContext.current
+
+    // Initialize today's date in the view model or any other logic if needed
+    LaunchedEffect(key1 = state.formattedDate) {
+        if (state.formattedDate.isEmpty()) {
+            val todayDate = SimpleDateFormat("dd-MM-yyyy").format(Date())
+            viewModel.onEvent(DiaryEvents.DateChanged(todayDate))
+            Log.d("todayDate",todayDate)
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { },
                 navigationIcon = {
                     IconButton(
-                        onClick = { navigateToMain()}) {
+                        onClick = { navigateToMain() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "NavigateToMain"
@@ -82,80 +108,57 @@ fun DiaryScreen(
                     .background(colorResource(id = R.color.darkGrey))
                     .padding(paddingValues)
             ) {
-               DateSelectionRow(
-                   previousDateClick = { /*TODO*/ },
-                   nextDateClick = { /*TODO*/ },
-                   dateText = "Select Date"
-               )
-                MainScreen()
+                DateSelectionRow(
+                    state = state,
+                    onDateSelected = { formattedDate ->
+                        viewModel.onEvent(
+                            DiaryEvents.DateChanged(
+                                formattedDate
+                            )
+                        )
+                    }
+                )
+                MainScreen(state)
             }
         }
     )
-
 }
-
-@Composable
-fun DateSelectionRow(
-    previousDateClick: () -> Unit,
-    nextDateClick: () -> Unit,
-    dateText: String
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(horizontal = 16.dp), // Adjust padding as needed
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Button(
-            onClick = previousDateClick,
-            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.darkGrey)),
-            modifier = Modifier
-                .wrapContentWidth()
-                .wrapContentHeight()
-        ) {
-            Text(
-                text = stringResource(id = R.string.PreviousDateButtonText),
-                color = Color(0xFFFF5722),
-                fontSize = 25.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Start
-            )
-        }
-
-        Text(
-            text = dateText,
-            color = colorResource(id = R.color.darkWhite),
-            fontSize = 25.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
-
-        Button(
-            onClick = nextDateClick,
-            colors = ButtonDefaults.buttonColors( colorResource(id = R.color.darkGrey)),
-            modifier = Modifier
-                .wrapContentWidth()
-                .wrapContentHeight()
-        ) {
-            Text(
-                text = stringResource(id = R.string.NextDayButtonText),
-                color = Color(0xFFFF5722),
-                fontSize = 25.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-
 @Composable
 fun MealCard(
     mealType: String,
     mealImageRes: Int,
     onAddClick: () -> Unit,
+    onCardClick: () -> Unit,
     message: String
 ) {
+    val shakeOffset = remember { Animatable(0f) }
+    val coroutineScope = rememberCoroutineScope()
+
+    fun shake() {
+        coroutineScope.launch {
+            shakeOffset.animateTo(
+                targetValue = 16f,
+                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
+            )
+            shakeOffset.animateTo(
+                targetValue = -16f,
+                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
+            )
+            shakeOffset.animateTo(
+                targetValue = 8f,
+                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
+            )
+            shakeOffset.animateTo(
+                targetValue = -8f,
+                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
+            )
+            shakeOffset.animateTo(
+                targetValue = 0f,
+                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
+            )
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -163,7 +166,17 @@ fun MealCard(
             .padding(start = 12.dp, top = 12.dp, end = 18.dp, bottom = 20.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(colorResource(id = R.color.ic_bfit_logo_background))
-            //.background(painterResource(id = R.drawable.relative_layout_bg))
+            .graphicsLayer {
+                translationX = shakeOffset.value
+            }
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        shake()
+                        onCardClick()
+                    }
+                )
+            }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -189,7 +202,10 @@ fun MealCard(
             )
 
             Button(
-                onClick = onAddClick,
+                onClick = {
+                    shake()
+                    onAddClick()
+                },
                 colors = ButtonDefaults.buttonColors(colorResource(id = R.color.darkGrey)),
                 modifier = Modifier
                     .height(IntrinsicSize.Min)
@@ -214,36 +230,54 @@ fun MealCard(
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(state: DiaryState) {
     Column {
         MealCard(
             mealType = stringResource(id = R.string.breakfast),
             mealImageRes = R.drawable.breakfast,
-            onAddClick = { /* Handle add breakfast click */ },
-            message = stringResource(id = R.string.tap_to_view_your_tracked_food)
+            onAddClick = { Log.d("DiaryScreen", "You pressed on the button") },
+            onCardClick = { Log.d("DiaryScreen", "You pressed on the card") },
+            message = if (state.mealTexts.isNotEmpty()) {
+                state.mealTexts[0]
+            } else {
+                stringResource(id = R.string.no_tracked_food_available)
+            }
         )
 
         MealCard(
             mealType = stringResource(id = R.string.lunch),
             mealImageRes = R.drawable.lunch,
             onAddClick = { /* Handle add lunch click */ },
-            message = stringResource(id = R.string.tap_to_view_your_tracked_food)
+            onCardClick = { /* Handle card click for lunch */ },
+            message = if (state.mealTexts.isNotEmpty()) {
+                state.mealTexts[1]
+            } else {
+                stringResource(id = R.string.no_tracked_food_available)
+            }
         )
 
         MealCard(
             mealType = stringResource(id = R.string.dinner),
             mealImageRes = R.drawable.dinner,
             onAddClick = { /* Handle add dinner click */ },
-            message = stringResource(id = R.string.tap_to_view_your_tracked_food)
+            onCardClick = { /* Handle card click for dinner */ },
+            message = if (state.mealTexts.isNotEmpty()) {
+                state.mealTexts[2]
+            } else {
+                stringResource(id = R.string.no_tracked_food_available)
+            }
         )
 
         MealCard(
             mealType = stringResource(id = R.string.snacks),
             mealImageRes = R.drawable.snacks,
             onAddClick = { /* Handle add snacks click */ },
-            message = stringResource(id = R.string.tap_to_view_your_tracked_food)
+            onCardClick = { /* Handle card click for snacks */ },
+            message = if (state.mealTexts.isNotEmpty()) {
+                state.mealTexts[3]
+            } else {
+                stringResource(id = R.string.no_tracked_food_available)
+            }
         )
     }
 }
-
-

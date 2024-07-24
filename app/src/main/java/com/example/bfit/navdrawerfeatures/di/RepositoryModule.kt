@@ -3,6 +3,8 @@ package com.example.bfit.navdrawerfeatures.di
 
 import com.example.bfit.navdrawerfeatures.adjust_calories.data.repository.MacrosRepositoryImpl
 import com.example.bfit.navdrawerfeatures.adjust_calories.domain.repository.MacrosRepository
+import com.example.bfit.navdrawerfeatures.diary.data.repository.DiaryRepositoryImpl
+import com.example.bfit.navdrawerfeatures.diary.domain.repository.DiaryRepository
 import com.example.bfit.navdrawerfeatures.goals.data.repository.GoalsRepositoryImpl
 
 import com.example.bfit.navdrawerfeatures.goals.domain.repository.GoalsRepository
@@ -25,4 +27,7 @@ abstract class  RepositoryModule {
 
     @Binds
     abstract fun bindMacrosRepository(macrosRepositoryImpl: MacrosRepositoryImpl): MacrosRepository
+
+    @Binds
+    abstract fun bindDiaryRepository(diaryRepositoryImpl: DiaryRepositoryImpl): DiaryRepository
 }

@@ -1,7 +1,5 @@
 package com.example.bfit.util.navigation
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -12,7 +10,7 @@ import com.example.bfit.authentication.presentation.login.LoginScreen
 import com.example.bfit.authentication.presentation.register.RegisterScreen
 import com.example.bfit.main.MainScreen
 import com.example.bfit.navdrawerfeatures.adjust_calories.presentation.AdjustMacrosScreen
-import com.example.bfit.navdrawerfeatures.diary.DiaryScreen
+import com.example.bfit.navdrawerfeatures.diary.presentation.DiaryScreen
 import com.example.bfit.navdrawerfeatures.goals.presentation.GoalsScreen
 
 @Composable

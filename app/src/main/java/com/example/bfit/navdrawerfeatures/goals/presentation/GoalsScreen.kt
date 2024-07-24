@@ -391,15 +391,6 @@ fun LayoutForGoals(
                 .fillMaxWidth()
                 .background(colorResource(id = R.color.ic_bfit_logo_background))
                 .padding(vertical = 10.dp)
-//                .clickable {
-//                    if (!viewModel.validateInputData(context, state.gender, state.weight, state.height, state.age, state.activityLevel, state.goal)) {
-//                        showWarningDialog(
-//                            "Please fill in all the required information!",
-//                            false,
-//                            "Please ensure all fields are filled out correctly before submitting."
-//                        )
-//                    }
-//                   else  navigateToMacros() }
 
                 .clickable {
                     coroutineScope.launch {
