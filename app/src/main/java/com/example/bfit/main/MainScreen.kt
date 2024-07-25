@@ -37,7 +37,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.bfit.navdrawerfeatures.HomeScreen
+import com.example.bfit.navdrawerfeatures.home.HomeScreen
 import com.example.bfit.R
 import com.example.bfit.util.navigation.Home
 import com.example.bfit.util.navigation.Profile

@@ -26,3 +26,12 @@ object Diary
 @Serializable
 data class AdjustMacros(val userInfo : List<String>)
 
+@Serializable
+object AddFood
+
+@Serializable
+object QuickAdd
+
+@Serializable
+data class ShowMealsFood(val meal: String, val formattedDate: String )
+

@@ -50,7 +50,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bfit.R
 import com.example.bfit.navdrawerfeatures.common.presentation.LogoSection
 import com.example.bfit.navdrawerfeatures.common.presentation.AlertDialogWarning
+import com.example.bfit.navdrawerfeatures.common.presentation.Divider
 import com.example.bfit.navdrawerfeatures.common.presentation.TextInputDialog
+import com.example.bfit.navdrawerfeatures.common.presentation.getStringArrayFromResource
 import com.example.bfit.util.Constants
 import kotlinx.coroutines.launch
 
@@ -292,12 +294,6 @@ fun GoalsScreen(
 
 
 @Composable
-fun getStringArrayFromResource(id: Int): List<String> {
-    val context = LocalContext.current
-    return context.resources.getStringArray(id).toList()
-}
-
-@Composable
 fun LayoutWithFields(
     state : GoalsState,
     onGenderClick: () -> Unit,
@@ -504,16 +500,6 @@ fun FieldRow(label: String, value: String, onFieldClick: () -> Unit) {
     }
 }
 
-@Composable
-fun Divider(color: Color = colorResource(id = R.color.whiteDelimiter)) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(1.dp)
-            .background(color)
-            .padding(top = 10.dp)
-    )
-}
 
 
 

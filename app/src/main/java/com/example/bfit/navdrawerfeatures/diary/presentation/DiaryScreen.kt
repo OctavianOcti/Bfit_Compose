@@ -62,7 +62,9 @@ import java.util.Date
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiaryScreen(
-    navigateToMain: () -> Unit = {}
+    navigateToMain: () -> Unit = {},
+    navigateToAddFood: () -> Unit = {},
+    navigateToShowMealsFoodScreen : (String, String) -> Unit = { _, _ ->}
 ) {
     val viewModel: DiaryViewModel = hiltViewModel()
     val state = viewModel.state
@@ -118,7 +120,7 @@ fun DiaryScreen(
                         )
                     }
                 )
-                MainScreen(state)
+                MainScreen(state,navigateToAddFood,navigateToShowMealsFoodScreen)
             }
         }
     )
@@ -230,13 +232,17 @@ fun MealCard(
 }
 
 @Composable
-fun MainScreen(state: DiaryState) {
+fun MainScreen(
+    state: DiaryState,
+    navigateToAddFood: () -> Unit,
+    navigateToShowMealsFoodScreen: (String, String) -> Unit
+) {
     Column {
         MealCard(
             mealType = stringResource(id = R.string.breakfast),
             mealImageRes = R.drawable.breakfast,
-            onAddClick = { Log.d("DiaryScreen", "You pressed on the button") },
-            onCardClick = { Log.d("DiaryScreen", "You pressed on the card") },
+            onAddClick = { navigateToAddFood() },
+            onCardClick = { navigateToShowMealsFoodScreen("Breakfast", state.formattedDate) },
             message = if (state.mealTexts.isNotEmpty()) {
                 state.mealTexts[0]
             } else {
@@ -248,7 +254,7 @@ fun MainScreen(state: DiaryState) {
             mealType = stringResource(id = R.string.lunch),
             mealImageRes = R.drawable.lunch,
             onAddClick = { /* Handle add lunch click */ },
-            onCardClick = { /* Handle card click for lunch */ },
+            onCardClick = { navigateToShowMealsFoodScreen("Lunch", state.formattedDate) },
             message = if (state.mealTexts.isNotEmpty()) {
                 state.mealTexts[1]
             } else {
@@ -260,7 +266,7 @@ fun MainScreen(state: DiaryState) {
             mealType = stringResource(id = R.string.dinner),
             mealImageRes = R.drawable.dinner,
             onAddClick = { /* Handle add dinner click */ },
-            onCardClick = { /* Handle card click for dinner */ },
+            onCardClick = { navigateToShowMealsFoodScreen("Dinner", state.formattedDate) },
             message = if (state.mealTexts.isNotEmpty()) {
                 state.mealTexts[2]
             } else {
@@ -272,7 +278,7 @@ fun MainScreen(state: DiaryState) {
             mealType = stringResource(id = R.string.snacks),
             mealImageRes = R.drawable.snacks,
             onAddClick = { /* Handle add snacks click */ },
-            onCardClick = { /* Handle card click for snacks */ },
+            onCardClick = { navigateToShowMealsFoodScreen("Lunch", state.formattedDate) },
             message = if (state.mealTexts.isNotEmpty()) {
                 state.mealTexts[3]
             } else {

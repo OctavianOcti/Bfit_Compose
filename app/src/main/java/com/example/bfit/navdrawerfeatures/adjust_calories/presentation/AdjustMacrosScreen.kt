@@ -37,9 +37,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bfit.R
 import com.example.bfit.navdrawerfeatures.common.presentation.AlertDialogWarning
+import com.example.bfit.navdrawerfeatures.common.presentation.Divider
 import com.example.bfit.navdrawerfeatures.common.presentation.TextInputDialog
-import com.example.bfit.navdrawerfeatures.goals.presentation.Divider
-import com.example.bfit.navdrawerfeatures.goals.presentation.GoalsViewModel
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

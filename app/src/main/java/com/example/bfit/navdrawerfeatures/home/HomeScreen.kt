@@ -1,4 +1,4 @@
-package com.example.bfit.navdrawerfeatures
+package com.example.bfit.navdrawerfeatures.home
 
 import androidx.compose.runtime.Composable
 

@@ -5,9 +5,13 @@ import com.example.bfit.navdrawerfeatures.adjust_calories.data.repository.Macros
 import com.example.bfit.navdrawerfeatures.adjust_calories.domain.repository.MacrosRepository
 import com.example.bfit.navdrawerfeatures.diary.data.repository.DiaryRepositoryImpl
 import com.example.bfit.navdrawerfeatures.diary.domain.repository.DiaryRepository
+import com.example.bfit.navdrawerfeatures.foodInfo.data.repository.FoodInfoRepositoryImpl
+import com.example.bfit.navdrawerfeatures.foodInfo.domain.repository.FoodInfoRepository
 import com.example.bfit.navdrawerfeatures.goals.data.repository.GoalsRepositoryImpl
 
 import com.example.bfit.navdrawerfeatures.goals.domain.repository.GoalsRepository
+import com.example.bfit.navdrawerfeatures.quickAdd.data.QuickAddRepositoryImpl
+import com.example.bfit.navdrawerfeatures.quickAdd.domain.repository.QuickAddRepository
 import com.example.bfit.navdrawerfeatures.profile.data.repository.ProfileRepositoryImpl
 import com.example.bfit.navdrawerfeatures.profile.domain.repository.ProfileRepository
 import dagger.Binds
@@ -30,4 +34,10 @@ abstract class  RepositoryModule {
 
     @Binds
     abstract fun bindDiaryRepository(diaryRepositoryImpl: DiaryRepositoryImpl): DiaryRepository
+
+    @Binds
+    abstract fun bindQuickAddRepository(quickAddRepositoryImpl: QuickAddRepositoryImpl): QuickAddRepository
+
+    @Binds
+    abstract fun bindFoodInfoRepository(foodInfoRepositoryImpl: FoodInfoRepositoryImpl): FoodInfoRepository
 }
