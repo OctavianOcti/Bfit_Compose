@@ -7,4 +7,6 @@ sealed class FoodInfoEvent {
     data class CarbsChanged(val carbs:String):FoodInfoEvent()
     data class ProteinChanged(val protein:String):FoodInfoEvent()
     data class FatChanged(val fat:String):FoodInfoEvent()
+    data class FoodNameChanged(val foodName:String): FoodInfoEvent()
+    data class FoodBrandChanged(val foodBrand: String): FoodInfoEvent()
 }

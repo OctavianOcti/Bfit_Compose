@@ -1,13 +1,9 @@
 package com.example.bfit.navdrawerfeatures.quickAdd.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,13 +16,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -41,12 +35,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bfit.R
 import com.example.bfit.navdrawerfeatures.common.presentation.AlertDialogWarning
 import com.example.bfit.navdrawerfeatures.common.presentation.Divider
+import com.example.bfit.navdrawerfeatures.common.presentation.FieldRow
 import com.example.bfit.navdrawerfeatures.common.presentation.LogoSection
 import com.example.bfit.navdrawerfeatures.common.presentation.TextInputDialog
 import com.example.bfit.navdrawerfeatures.common.presentation.getStringArrayFromResource
-import com.example.bfit.navdrawerfeatures.goals.presentation.FieldRow
 import com.example.bfit.navdrawerfeatures.goals.presentation.SingleChoiceDialogSample
-import com.example.bfit.util.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -273,43 +266,51 @@ fun LayoutWithFields(
             FieldRow(
                 label = stringResource(id = R.string.meal),
                 value = state.meal.ifEmpty { stringResource(id = R.string.select_meal) },
-                onFieldClick = onMealClick
+                onFieldClick = onMealClick,
+                textColor = colorResource(id = R.color.blueForDarkGrey)
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.kcal),
                 value = state.kcal.ifEmpty { stringResource(id = R.string.enter_calories_amount) },
-                onFieldClick = onKcalClick
+                onFieldClick = onKcalClick,
+                textColor = colorResource(id = R.color.blueForDarkGrey)
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.protein_g),
                 value = state.protein.ifEmpty { stringResource(id = R.string.enter_protein_amount) },
-                onFieldClick = onProteinClick
+                onFieldClick = onProteinClick,
+                textColor = colorResource(id = R.color.blueForDarkGrey)
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.carbohydrates),
                 value = state.carbs.ifEmpty { stringResource(id = R.string.enter_carbs_amount) },
-                onFieldClick = onCarbClick
+                onFieldClick = onCarbClick,
+                textColor = colorResource(id = R.color.blueForDarkGrey)
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.fat_g),
                 value = state.fat.ifEmpty { stringResource(id = R.string.enter_fat_amount) },
-                onFieldClick = onFatClick
+                onFieldClick = onFatClick,
+                textColor = colorResource(id = R.color.blueForDarkGrey)
+
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.food_name),
                 value = state.foodName.ifEmpty { stringResource(id = R.string.enter_food_name) },
-                onFieldClick = onFoodNameClick
+                onFieldClick = onFoodNameClick,
+                textColor = colorResource(id = R.color.blueForDarkGrey)
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.serving_size_g),
                 value = state.servingSize.ifEmpty { stringResource(id = R.string.enter_serving_size) },
-                onFieldClick = onServingSizeClick
+                onFieldClick = onServingSizeClick,
+                textColor = colorResource(id = R.color.blueForDarkGrey)
             )
         }
     }

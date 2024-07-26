@@ -14,6 +14,8 @@ import com.example.bfit.navdrawerfeatures.quickAdd.data.QuickAddRepositoryImpl
 import com.example.bfit.navdrawerfeatures.quickAdd.domain.repository.QuickAddRepository
 import com.example.bfit.navdrawerfeatures.profile.data.repository.ProfileRepositoryImpl
 import com.example.bfit.navdrawerfeatures.profile.domain.repository.ProfileRepository
+import com.example.bfit.navdrawerfeatures.showMealsFood.data.repository.ShowMealsFoodImpl
+import com.example.bfit.navdrawerfeatures.showMealsFood.domain.repository.ShowMealsFoodRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -40,4 +42,7 @@ abstract class  RepositoryModule {
 
     @Binds
     abstract fun bindFoodInfoRepository(foodInfoRepositoryImpl: FoodInfoRepositoryImpl): FoodInfoRepository
+
+    @Binds
+    abstract fun bindShowMealsFoodInfoRepository(showMealsFoodImpl: ShowMealsFoodImpl) : ShowMealsFoodRepository
 }

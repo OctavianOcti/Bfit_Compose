@@ -1,15 +1,14 @@
-package com.example.bfit.navdrawerfeatures.showMealsFood
+package com.example.bfit.navdrawerfeatures.showMealsFood.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -18,14 +17,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.bfit.R
+import com.example.bfit.navdrawerfeatures.showMealsFood.domain.FoodInfoModel
 
 @Composable
-@Preview(showBackground = true)
-fun MealCard() {
+fun MealCard(
+    foodInfoModel: FoodInfoModel,
+    onCLick: () -> Unit ={}
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 8.dp, top = 10.dp, end = 8.dp, bottom = 5.dp),
+            .padding(start = 8.dp, top = 10.dp, end = 8.dp, bottom = 5.dp)
+            .clickable { onCLick() },
         colors = CardDefaults.cardColors(
             containerColor = colorResource(id = R.color.ic_bfit_logo_background),
         ),
@@ -42,7 +45,7 @@ fun MealCard() {
             val (mealLabel, textServingSize, servingSize, servingType, caloriesLogged, textCaloriesLogged) = createRefs()
 
             Text(
-                text = stringResource(id = R.string.food),
+                text = foodInfoModel.label,
                 color = colorResource(id = R.color.blueForDarkGrey),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -63,7 +66,7 @@ fun MealCard() {
             )
 
             Text(
-                text = stringResource(id = R.string._120),
+                text = foodInfoModel.servingSize,
                 color = colorResource(id = R.color.orange),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
@@ -84,7 +87,7 @@ fun MealCard() {
             )
 
             Text(
-                text = stringResource(id = R.string._125),
+                text = foodInfoModel.enercKcal,
                 color = colorResource(id = R.color.orange),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,

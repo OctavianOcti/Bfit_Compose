@@ -45,6 +45,12 @@ class FoodInfoViewModel @Inject constructor(
                 state = state.copy(servingSize = event.servingSize)
             }
 
+            is FoodInfoEvent.FoodBrandChanged -> {
+                state = state.copy(foodBrand = event.foodBrand)
+            }
+            is FoodInfoEvent.FoodNameChanged -> {
+                state = state.copy(foodName = event.foodName)
+            }
         }
     }
 

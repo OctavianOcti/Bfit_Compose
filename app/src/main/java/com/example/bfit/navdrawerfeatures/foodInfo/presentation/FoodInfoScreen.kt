@@ -1,5 +1,6 @@
 package com.example.bfit.navdrawerfeatures.foodInfo.presentation
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -28,20 +30,46 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bfit.R
 import com.example.bfit.navdrawerfeatures.common.presentation.Divider
+import com.example.bfit.navdrawerfeatures.common.presentation.FieldRow
 import com.example.bfit.navdrawerfeatures.common.presentation.LogoSection
-import com.example.bfit.navdrawerfeatures.goals.presentation.FieldRow
+import com.example.bfit.navdrawerfeatures.common.presentation.TextInputDialog
+import com.example.bfit.navdrawerfeatures.goals.presentation.GoalsEvent
+import com.example.bfit.navdrawerfeatures.showMealsFood.domain.FoodInfoModel
+import com.example.bfit.util.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FoodInfoScreen() {
+fun FoodInfoScreen(
+    foodInfoModel: FoodInfoModel,
+    meal:String,
+    formattedDate:String,
+    navigateToShowMealsFood: ()-> Unit ={}
+) {
     val viewModel: FoodInfoViewModel = hiltViewModel()
     val state = viewModel.state
+    LaunchedEffect(key1 = foodInfoModel) {
+        Log.d("foodInfoScreen", foodInfoModel.toString())
+        if(!foodInfoModel.isEmpty()){
+            viewModel.onEvent(FoodInfoEvent.MealChanged(meal))
+            viewModel.onEvent(FoodInfoEvent.ServingSizeChanged(foodInfoModel.servingSize))
+            viewModel.onEvent(FoodInfoEvent.KcalChanged(foodInfoModel.enercKcal))
+            viewModel.onEvent(FoodInfoEvent.CarbsChanged(foodInfoModel.carb))
+            viewModel.onEvent(FoodInfoEvent.ProteinChanged(foodInfoModel.prot))
+            viewModel.onEvent(FoodInfoEvent.FatChanged(foodInfoModel.fat))
+            viewModel.onEvent(FoodInfoEvent.FoodNameChanged(foodInfoModel.label))
+            viewModel.onEvent(FoodInfoEvent.FoodBrandChanged(foodInfoModel.brand))
+
+        }
+
+    }
+
     val context = LocalContext.current
     val inputDialogState = remember { mutableStateOf(false) }
     val inputDialogTitle = remember { mutableStateOf("") }
@@ -60,7 +88,7 @@ fun FoodInfoScreen() {
             TopAppBar(
                 title = { },
                 navigationIcon = {
-                    IconButton(onClick = { }) { //navigateToScreen()
+                    IconButton(onClick = { navigateToShowMealsFood()}) { //navigateToScreen()
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "NavigateToMain"
@@ -81,7 +109,7 @@ fun FoodInfoScreen() {
 //                        }
                     }) {
                         Icon(
-                            ImageVector.vectorResource(id = R.drawable.ic_baseline_check_24),
+                            ImageVector.vectorResource(id = R.drawable.baseline_save_24),
                             tint = Color(0xFF4CAF50),
                             contentDescription = "Edit notes"
                         )
@@ -98,9 +126,19 @@ fun FoodInfoScreen() {
                     .padding(paddingValues)
             ) {
                 Text(
-                    text = stringResource(id = R.string.quick_add),
-                    color = colorResource(id = R.color.orange),
+                    text = state.foodName,
+                    color = colorResource(id = R.color.blueForDarkGrey),
                     fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = state.foodBrand,
+                    color = colorResource(id = R.color.blueForDarkGrey),
+                    fontSize = 15.sp,
                     modifier = Modifier
                         .padding(10.dp)
                         .fillMaxWidth(),
@@ -113,6 +151,41 @@ fun FoodInfoScreen() {
                 )
                 LogoSection()
             }
+        }
+    )
+
+    TextInputDialog(
+        title = inputDialogTitle.value,
+        text = when (inputDialogTitle.value) {
+            "Enter serving size amount" -> inputTextServingSize.value
+            else -> ""
+        },
+        onTextChange = {
+            when (inputDialogTitle.value) {
+                "Enter serving size amount" -> inputTextServingSize.value = it
+            }
+        },
+        onDismissRequest = {
+            inputDialogState.value = false
+           // inputTextServingSize.value= ""
+
+        },
+        onConfirm = {
+            when (inputDialogTitle.value) {
+                "Enter serving size amount" -> viewModel.onEvent(FoodInfoEvent.ServingSizeChanged(inputTextServingSize.value))
+
+            }
+           // inputTextServingSize.value= ""
+            inputDialogState.value = false
+        },
+        visible = inputDialogState.value,
+        validate = when (inputDialogTitle.value) {
+            "Enter serving size amount" -> servingValidator
+            else -> { _: String -> true }
+        },
+        validationMessage = when (inputDialogTitle.value) {
+            "Enter serving size amount" -> "Enter a valid number (maximum one decimal allowed)"
+            else -> ""
         }
     )
 }
@@ -135,38 +208,44 @@ fun LayoutWithFields(
         ) {
             FieldRow(
                 label = stringResource(id = R.string.meal),
-                value = state.meal.ifEmpty { "" },
-                onFieldClick = {}
+                value = state.meal.ifEmpty { "asd" },
+                onFieldClick = {},
+                textColor = colorResource(id = R.color.orange)
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.serving_size_g),
                 value = state.servingSize.ifEmpty { "" },
-                onFieldClick = onServingSizeClick
+                onFieldClick = onServingSizeClick,
+                textColor = colorResource(id = R.color.blueForDarkGrey)
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.kcal),
                 value = state.kcal.ifEmpty { "" },
-                onFieldClick = {}
+                onFieldClick = {},
+                textColor = colorResource(id = R.color.orange)
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.protein_g),
                 value = state.protein.ifEmpty { "" },
-                onFieldClick = {}
+                onFieldClick = {},
+                textColor = colorResource(id = R.color.orange)
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.carbohydrates),
                 value = state.carbs.ifEmpty { "" },
-                onFieldClick = {}
+                onFieldClick = {},
+                textColor = colorResource(id = R.color.orange)
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.fat_g),
                 value = state.fat.ifEmpty { "" },
-                onFieldClick = {}
+                onFieldClick = {},
+                textColor = colorResource(id = R.color.orange)
             )
         }
     }

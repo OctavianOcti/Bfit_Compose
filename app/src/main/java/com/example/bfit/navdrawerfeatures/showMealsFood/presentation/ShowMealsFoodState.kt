@@ -1,4 +1,4 @@
-package com.example.bfit.navdrawerfeatures.showMealsFood
+package com.example.bfit.navdrawerfeatures.showMealsFood.presentation
 
 data class  ShowMealsFoodState(
     val meal : String = "",

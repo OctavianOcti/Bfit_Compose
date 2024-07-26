@@ -12,9 +12,12 @@ import com.example.bfit.main.MainScreen
 import com.example.bfit.navdrawerfeatures.addFood.AddFoodScreen
 import com.example.bfit.navdrawerfeatures.adjust_calories.presentation.AdjustMacrosScreen
 import com.example.bfit.navdrawerfeatures.diary.presentation.DiaryScreen
+import com.example.bfit.navdrawerfeatures.foodInfo.presentation.FoodInfoScreen
 import com.example.bfit.navdrawerfeatures.goals.presentation.GoalsScreen
 import com.example.bfit.navdrawerfeatures.quickAdd.presentation.QuickAddScreen
-import com.example.bfit.navdrawerfeatures.showMealsFood.ShowMealFoodScreen
+import com.example.bfit.navdrawerfeatures.showMealsFood.domain.FoodInfoModel
+import com.example.bfit.navdrawerfeatures.showMealsFood.presentation.ShowMealFoodScreen
+import kotlin.reflect.typeOf
 
 @Composable
 fun MyNavigationHost(
@@ -79,12 +82,27 @@ fun MyNavigationHost(
             }
         }
         composable<ShowMealsFood> {
-            val meal : ShowMealsFood = it.toRoute()
+            val meal: ShowMealsFood = it.toRoute()
             ShowMealFoodScreen(
-                meal.meal,
-                meal.formattedDate,
-            ) { navController.navigate(Diary) }
+                meal =meal.meal,
+                formattedDate =  meal.formattedDate,
+                navigateToDiary = {navController.navigate(Diary)},
+                {foodInfoModel, meal, formattedDate ->navController.navigate(FoodInfo(foodInfoModel,meal,formattedDate))  }
+               // navigateToFoodInfo = {navController.navigate(FoodInfo(it))}
+            )
+        }
 
+        composable<FoodInfo> (
+            //typeMap = mapOf(typeOf<FoodInfoModel>() to FoodInfoType)
+            typeMap = mapOf(typeOf<FoodInfoModel>() to parcelableType<FoodInfoModel>())
+        ){
+            val foodInfo: FoodInfo = it.toRoute()
+            FoodInfoScreen(
+                foodInfoModel = foodInfo.foodInfo,
+                meal = foodInfo.meal,
+                formattedDate = foodInfo.formattedDate,
+                navigateToShowMealsFood = {navController.navigate(ShowMealsFood(foodInfo.meal,foodInfo.formattedDate))}
+            )
 
         }
 

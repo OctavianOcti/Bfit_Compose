@@ -51,6 +51,7 @@ import com.example.bfit.R
 import com.example.bfit.navdrawerfeatures.common.presentation.LogoSection
 import com.example.bfit.navdrawerfeatures.common.presentation.AlertDialogWarning
 import com.example.bfit.navdrawerfeatures.common.presentation.Divider
+import com.example.bfit.navdrawerfeatures.common.presentation.FieldRow
 import com.example.bfit.navdrawerfeatures.common.presentation.TextInputDialog
 import com.example.bfit.navdrawerfeatures.common.presentation.getStringArrayFromResource
 import com.example.bfit.util.Constants
@@ -316,37 +317,42 @@ fun LayoutWithFields(
             FieldRow(
                 label = stringResource(id = R.string.gender),
                 value = state.gender.ifEmpty { stringResource(id = R.string.set_gender) },
-                onFieldClick = onGenderClick
+                onFieldClick = onGenderClick,
+                textColor = colorResource(id = R.color.blueForDarkGrey)
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.weight_kgs),
                 value = state.weight.ifEmpty { stringResource(id = R.string.set_current_weight) },
-                onFieldClick = onWeightClick
+                onFieldClick = onWeightClick,textColor = colorResource(id = R.color.blueForDarkGrey)
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.height_cm),
                 value = state.height.ifEmpty { stringResource(id = R.string.set_current_height) },
-                onFieldClick = onHeightClick
+                onFieldClick = onHeightClick,textColor = colorResource(id = R.color.blueForDarkGrey)
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.age_years),
                 value = state.age.ifEmpty { stringResource(id = R.string.set_current_age) },
-                onFieldClick = onAgeClick
+                onFieldClick = onAgeClick,
+                textColor = colorResource(id = R.color.blueForDarkGrey)
+
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.activity_level),
                 value = state.activityLevel.ifEmpty { stringResource(id = R.string.set_current_activity_level) },
-                onFieldClick = onActivityLevelClick
+                onFieldClick = onActivityLevelClick,
+                textColor = colorResource(id = R.color.blueForDarkGrey)
             )
             Divider()
             FieldRow(
                 label = stringResource(id = R.string.goal),
                 value = state.goal.ifEmpty { stringResource(id = R.string.set_your_goal) },
-                onFieldClick = onGoalClick
+                onFieldClick = onGoalClick,
+                textColor = colorResource(id = R.color.blueForDarkGrey)
             )
         }
     }
@@ -411,14 +417,32 @@ fun LayoutForGoals(
                             animationSpec = tween(durationMillis = 50)
                         )
                     }
-                    if (!viewModel.validateInputData(context, state.gender, state.weight, state.height, state.age, state.activityLevel, state.goal)) {
+                    if (!viewModel.validateInputData(
+                            context,
+                            state.gender,
+                            state.weight,
+                            state.height,
+                            state.age,
+                            state.activityLevel,
+                            state.goal
+                        )
+                    ) {
                         showWarningDialog(
                             "Please fill in all the required information!",
                             false,
                             "Please ensure all fields are filled out correctly before submitting."
                         )
                     } else {
-                        navigateToMacros(listOf(state.gender,state.activityLevel,state.goal,state.age,state.weight,state.height))
+                        navigateToMacros(
+                            listOf(
+                                state.gender,
+                                state.activityLevel,
+                                state.goal,
+                                state.age,
+                                state.weight,
+                                state.height
+                            )
+                        )
                     }
                 }
                 .offset(x = shakeOffset.value.dp)
@@ -472,33 +496,7 @@ fun TipsLayout() {
     }
 }
 
-@Composable
-fun FieldRow(label: String, value: String, onFieldClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, top = 10.dp, end = 15.dp, bottom = 10.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            color = colorResource(id = R.color.darkWhite),
-            fontSize = 20.sp,
-            modifier = Modifier.align(Alignment.CenterVertically)
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        TextButton(
-            onClick = onFieldClick,
-            modifier = Modifier.align(Alignment.CenterVertically)
-        ) {
-            Text(
-                text = value,
-                color = colorResource(id = R.color.blueForDarkGrey),
-                textAlign = TextAlign.End
-            )
-        }
-    }
-}
+
 
 
 

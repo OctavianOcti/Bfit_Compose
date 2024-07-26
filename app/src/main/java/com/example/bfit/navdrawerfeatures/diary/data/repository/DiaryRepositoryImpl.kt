@@ -46,9 +46,9 @@ class DiaryRepositoryImpl @Inject constructor(
             mealCollection.get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val result = if (task.result.isEmpty) {
-                        "No tracked food available"  // Replace with a string resource if needed
+                        "No tracked food available"
                     } else {
-                        "Tap to view your tracked food"  // Replace with a string resource if needed
+                        "Tap to view your tracked food"
                     }
                     continuation.resume(result)
                 } else {
@@ -62,44 +62,3 @@ class DiaryRepositoryImpl @Inject constructor(
             }
         }
 }
-//
-//class DiaryRepositoryImpl @Inject constructor(
-//    private val firebaseFirestore: FirebaseFirestore
-//) : DiaryRepository {
-//    override fun getMealTexts(uid: String, formattedDate: String): Flow<Resource<List<String>>> = flow {
-//        emit(Resource.Loading())
-//
-//        val dayDocument = firebaseFirestore.collection("users")
-//            .document(uid)
-//            .collection("Day Tracker").document(formattedDate)
-//        val meals = arrayOf("Breakfast", "Lunch", "Dinner", "Snacks")
-//        val mealTexts = MutableList(meals.size) { "" }
-//
-//        meals.forEachIndexed { index, meal ->
-//            val mealCollection = dayDocument.collection(meal)
-//            mealCollection.get()
-//                .addOnCompleteListener { task ->
-//                    if (task.isSuccessful) {
-//                        mealTexts[index] = if (task.result.isEmpty) {
-//                            "No tracked food available"  // Replace with a string resource if needed
-//                        } else {
-//                            "Tap to view your tracked food"  // Replace with a string resource if needed
-//                        }
-//                    } else {
-//                        val exception = task.exception
-//                        exception?.let {
-//                            emit(Resource.Error(
-//                                message= exception.message.toString(),
-//                                data = mealTexts
-//                            ))
-//                        }
-//                        return@addOnCompleteListener
-//                    }
-//
-//                    if (mealTexts.none { it.isEmpty() }) {
-//                        emit(Resource.Success(mealTexts))
-//                    }
-//                }
-//        }
-//    }
-//}

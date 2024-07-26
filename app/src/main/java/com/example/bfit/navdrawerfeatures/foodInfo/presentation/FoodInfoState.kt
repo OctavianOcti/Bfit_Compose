@@ -7,4 +7,6 @@ data class FoodInfoState(
     val carbs: String = "",
     val protein: String = "",
     val fat: String = "",
+    val foodName: String = "",
+    val foodBrand:String = ""
 )
