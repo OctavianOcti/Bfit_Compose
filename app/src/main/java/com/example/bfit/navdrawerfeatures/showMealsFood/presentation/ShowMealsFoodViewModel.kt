@@ -22,14 +22,13 @@ import javax.inject.Inject
 class ShowMealsFoodViewModel @Inject constructor(
     private var showMealFoodRepository: ShowMealsFoodRepository
 ) : ViewModel() {
+
     var state by mutableStateOf(ShowMealsFoodState())
         private set
     private val _foodInfoState = MutableStateFlow<Resource<List<FoodInfoModel>>>(Resource.Loading())
     val foodInfoState: StateFlow<Resource<List<FoodInfoModel>>> = _foodInfoState
 
-    init {
 
-    }
 
     fun onEvent(event: ShowMealsFoodEvent) {
         when (event) {
@@ -51,7 +50,6 @@ class ShowMealsFoodViewModel @Inject constructor(
 
     private fun getFood(uid: String, formattedDate: String, meal: String) {
         viewModelScope.launch {
-            Log.d("ShowMealsFoodViewModel",meal + formattedDate)
             showMealFoodRepository.getFood(uid, formattedDate, meal).collectLatest { resource ->
                 when(resource){
                     is Resource.Error -> {}

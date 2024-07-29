@@ -36,6 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bfit.R
+import com.example.bfit.authentication.presentation.login.LoginFormEvent
+import com.example.bfit.authentication.presentation.login.LoginViewModel
+import com.example.bfit.navdrawerfeatures.common.presentation.AlertDialogWarning
 import com.example.bfit.navdrawerfeatures.common.presentation.Divider
 import com.example.bfit.navdrawerfeatures.common.presentation.FieldRow
 import com.example.bfit.navdrawerfeatures.common.presentation.LogoSection
@@ -54,6 +57,7 @@ fun FoodInfoScreen(
 ) {
     val viewModel: FoodInfoViewModel = hiltViewModel()
     val state = viewModel.state
+    val context = LocalContext.current
     LaunchedEffect(key1 = foodInfoModel) {
         Log.d("foodInfoScreen", foodInfoModel.toString())
         if(!foodInfoModel.isEmpty()){
@@ -65,19 +69,44 @@ fun FoodInfoScreen(
             viewModel.onEvent(FoodInfoEvent.FatChanged(foodInfoModel.fat))
             viewModel.onEvent(FoodInfoEvent.FoodNameChanged(foodInfoModel.label))
             viewModel.onEvent(FoodInfoEvent.FoodBrandChanged(foodInfoModel.brand))
+            viewModel.onEvent(FoodInfoEvent.FormattedDateChanged(formattedDate))
 
+            viewModel.onEvent(FoodInfoEvent.PreviousFoodKcalChanged(foodInfoModel.enercKcal))
+            viewModel.onEvent(FoodInfoEvent.PreviousFoodProteinChanged(foodInfoModel.prot))
+            viewModel.onEvent(FoodInfoEvent.PreviousFoodCarbChanged(foodInfoModel.carb))
+            viewModel.onEvent(FoodInfoEvent.PreviousFoodFatChanged(foodInfoModel.fat))
+            viewModel.onEvent(FoodInfoEvent.PreviousServingSizeChanged(foodInfoModel.servingSize))
         }
 
     }
+    LaunchedEffect(key1 = context) {
+        viewModel.validationEvents.collect { event ->
+            when (event) {
+                FoodInfoViewModel.ValidationEvent.Succes -> navigateToShowMealsFood()
+            }
+        }
+    }
 
-    val context = LocalContext.current
+    
+
     val inputDialogState = remember { mutableStateOf(false) }
     val inputDialogTitle = remember { mutableStateOf("") }
     val inputTextServingSize = remember { mutableStateOf("") }
 
+    val warningDialogState = remember { mutableStateOf(false) }
+    val warningDialogTitle = remember { mutableStateOf("") }
+    val warningDialogShowCancelButton = remember { mutableStateOf(true) }
+    val warningDialogAlertMessage = remember { mutableStateOf("") }
+
     val showInputDialog: (String) -> Unit = { title ->
         inputDialogTitle.value = title
         inputDialogState.value = true
+    }
+    val showWarningDialog: (String, Boolean, String?) -> Unit = { title, showCancel, message ->
+        warningDialogTitle.value = title
+        warningDialogShowCancelButton.value = showCancel
+        warningDialogAlertMessage.value = message ?: ""
+        warningDialogState.value = true
     }
 
     val servingValidator: (String) -> Boolean = { serving -> viewModel.validateServing(serving) }
@@ -102,11 +131,11 @@ fun FoodInfoScreen(
                 ),
                 actions = {
                     IconButton(onClick = {
-//                        if(!viewModel.validateInputData(context,state.meal,state.kcal,state.protein,state.carbs,state.fat,state.foodName,state.servingSize)){
-//                            showWarningDialog("Please fill in all the required information!",
-//                                false,
-//                                "Please ensure all fields are filled out correctly before submitting.")
-//                        }
+                        showWarningDialog(
+                            "Update the food ${state.foodName}" + " ${state.foodBrand}" + " information?",
+                            true,
+                            "Would you like to ovveride the information for this food?")
+
                     }) {
                         Icon(
                             ImageVector.vectorResource(id = R.drawable.baseline_save_24),
@@ -172,8 +201,8 @@ fun FoodInfoScreen(
         },
         onConfirm = {
             when (inputDialogTitle.value) {
-                "Enter serving size amount" -> viewModel.onEvent(FoodInfoEvent.ServingSizeChanged(inputTextServingSize.value))
-
+               // "Enter serving size amount" -> viewModel.onEvent(FoodInfoEvent.ServingSizeChanged(inputTextServingSize.value))
+                "Enter serving size amount" -> viewModel.onEvent(FoodInfoEvent.MacrosChanged(inputTextServingSize.value))
             }
            // inputTextServingSize.value= ""
             inputDialogState.value = false
@@ -187,6 +216,16 @@ fun FoodInfoScreen(
             "Enter serving size amount" -> "Enter a valid number (maximum one decimal allowed)"
             else -> ""
         }
+    )
+
+    AlertDialogWarning(
+        title = warningDialogTitle.value,
+        onDismissRequest = { warningDialogState.value = false },
+        onConfirm = { viewModel.onEvent(FoodInfoEvent.SubmitData) },
+        //onConfirm = { Log.d("GoalsScreen","onConfirm")},
+        visible = warningDialogState.value,
+        showCancelButton = warningDialogShowCancelButton.value,
+        alertMessage = warningDialogAlertMessage.value
     )
 }
 

@@ -60,6 +60,4 @@ class ShowMealsFoodImpl @Inject constructor(
         val scale = 10.0.pow(decimals)
         return (round(this * scale) / scale)
     }
-
-
 }

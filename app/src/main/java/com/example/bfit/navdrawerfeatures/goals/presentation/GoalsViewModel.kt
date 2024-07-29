@@ -44,7 +44,7 @@ class GoalsViewModel @Inject constructor(
             .onEach { resource ->
                 when (resource) {
                     is Resource.Error -> {
-                        /* TODO: Handle the error */
+
                     }
 
                     is Resource.Success -> {

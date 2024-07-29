@@ -8,5 +8,11 @@ data class FoodInfoState(
     val protein: String = "",
     val fat: String = "",
     val foodName: String = "",
-    val foodBrand:String = ""
+    val foodBrand: String = "",
+    val previousServingSize: String = "",
+    val previousFoodKcal:String ="",
+    val previousFoodProtein:String = "",
+    val previousFoodCarb:String = "",
+    val previousFoodFat:String ="",
+    val formattedDate:String = ""
 )
