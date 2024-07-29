@@ -115,7 +115,6 @@ class FoodInfoViewModel @Inject constructor(
                     is Resource.Error -> {
                         Log.d("Eroare", result.message.toString())
                     }
-
                     is Resource.Loading -> {}
                     is Resource.Success -> {
                        updateDaysDocument(result)
@@ -179,13 +178,6 @@ class FoodInfoViewModel @Inject constructor(
         this.onEvent(FoodInfoEvent.CarbsChanged(round(state.servingSize.toDouble() * state.carbs.toDouble() / state.previousServingSize.toDouble()).toString()))
         this.onEvent(FoodInfoEvent.FatChanged(round(state.servingSize.toDouble() * state.fat.toDouble() / state.previousServingSize.toDouble()).toString()))
         this.onEvent(FoodInfoEvent.PreviousServingSizeChanged(state.servingSize))
-    }
-
-
-    private fun submitData() {
-        viewModelScope.launch {
-            validationEventChannel.send(ValidationEvent.Succes)
-        }
     }
 
     sealed class ValidationEvent {
