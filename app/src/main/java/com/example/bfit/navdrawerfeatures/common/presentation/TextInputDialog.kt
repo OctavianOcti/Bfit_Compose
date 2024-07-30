@@ -32,7 +32,8 @@ fun TextInputDialog(
     onConfirm: () -> Unit,
     visible: Boolean,
     validate: (String) -> Boolean,
-    validationMessage: String
+    validationMessage: String,
+    keyboardType: KeyboardType
 ) {
     var isValid by remember { mutableStateOf(true) }
 
@@ -59,7 +60,7 @@ fun TextInputDialog(
                             unfocusedIndicatorColor = colorResource(id = R.color.blueForDarkGrey)
                         ),
                         keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Number
+                            keyboardType = keyboardType
                         ),
                     )
                     if (!isValid) {

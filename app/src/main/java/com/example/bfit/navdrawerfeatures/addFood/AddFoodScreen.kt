@@ -22,9 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
@@ -38,6 +36,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,7 +52,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -65,11 +63,15 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview(showBackground = true)
 fun AddFoodScreen(
+    formattedDate:String,
     navigateToDiary: () -> Unit = {},
-    navigateToQuickAdd: () -> Unit = {}
+    navigateToQuickAdd: (String) -> Unit = {}
 ) {
+
+    LaunchedEffect(key1 = formattedDate) {
+        Log.d("AddFoodScreen date",formattedDate)
+    }
     Scaffold(
         topBar = { AddFoodTopBar(navigateToDiary) }
     ) { paddingValues ->
@@ -81,7 +83,7 @@ fun AddFoodScreen(
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
             item {
-                QuickAddSection(navigateToQuickAdd)
+                QuickAddSection(navigateToQuickAdd,formattedDate)
             }
             item {
                 FoodMealSection()
@@ -91,7 +93,9 @@ fun AddFoodScreen(
             }
         }
     }
+
 }
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -225,7 +229,7 @@ fun shakeAnimation(
 }
 
 @Composable
-fun QuickAddSection(onClick: () -> Unit) {
+fun QuickAddSection(onClick: (String) -> Unit,formattedDate: String) {
     var isShaking by remember { mutableStateOf(false) }
     val shakeModifier = shakeAnimation(
         modifier = Modifier,
@@ -233,7 +237,7 @@ fun QuickAddSection(onClick: () -> Unit) {
             // Optionally trigger any additional logic here
 
             isShaking = true
-            onClick()
+            onClick(formattedDate)
         }
     )
     val clickableModifier = Modifier

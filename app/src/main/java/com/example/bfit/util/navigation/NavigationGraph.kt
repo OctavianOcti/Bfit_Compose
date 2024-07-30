@@ -29,8 +29,8 @@ fun MyNavigationHost(
         startDestination = if(isUserLoggedIn) Main else Login,
     ) {
         composable<Login> {
-          LoginScreen({ navController.navigate(Register) },
-              { navController.navigate(Main) })
+            LoginScreen({ navController.navigate(Register) },
+                { navController.navigate(Main) })
         }
         composable<Register> {
             RegisterScreen {
@@ -51,7 +51,7 @@ fun MyNavigationHost(
                 { navController.navigate(Main)},
                 {navController.navigate(AdjustMacros(it))}
             )
-            }
+        }
 
         composable<AdjustMacros> {
             val userInfo: AdjustMacros = it.toRoute()
@@ -64,22 +64,25 @@ fun MyNavigationHost(
         composable<Diary> {
             DiaryScreen(
                 {navController.navigate(Main)},
-                {navController.navigate(AddFood)},
+                {navController.navigate(AddFood(it))},
                 //{navController.navigate(ShowMealsFood(it,it))}
                 {meal,formattedDate -> navController.navigate(ShowMealsFood(meal,formattedDate))}
             )
         }
 
         composable<AddFood>{
+            val addFoodInfo: AddFood = it.toRoute()
             AddFoodScreen(
+                formattedDate = addFoodInfo.formattedDate,
                 {navController.navigate(Diary)},
-                {navController.navigate(QuickAdd)}
+                {date->navController.navigate(QuickAdd(date))}
             )
         }
         composable<QuickAdd>{
-            QuickAddScreen{
-                navController.navigate(AddFood)
-            }
+            val quickAddInfo:QuickAdd= it.toRoute()
+            QuickAddScreen(
+                formattedDate = quickAddInfo.formattedDate
+            ) { date -> navController.navigate(AddFood(date)) }
         }
         composable<ShowMealsFood> {
             val meal: ShowMealsFood = it.toRoute()
@@ -88,7 +91,7 @@ fun MyNavigationHost(
                 formattedDate =  meal.formattedDate,
                 navigateToDiary = {navController.navigate(Diary)},
                 {foodInfoModel, meal, formattedDate ->navController.navigate(FoodInfo(foodInfoModel,meal,formattedDate))  }
-               // navigateToFoodInfo = {navController.navigate(FoodInfo(it))}
+                // navigateToFoodInfo = {navController.navigate(FoodInfo(it))}
             )
         }
 

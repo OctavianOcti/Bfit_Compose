@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -263,7 +264,8 @@ fun AdjustMacrosScreen(
         },
         visible = inputDialogState.value,
         validate = calorieValidator,
-        validationMessage = "The calorie amount should be an integer!"
+        validationMessage = "The calorie amount should be an integer!",
+        keyboardType = KeyboardType.Number
     )
 }
 @Composable

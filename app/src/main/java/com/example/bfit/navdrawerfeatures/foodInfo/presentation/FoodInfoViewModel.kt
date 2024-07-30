@@ -113,7 +113,7 @@ class FoodInfoViewModel @Inject constructor(
             ).onEach { result ->
                 when (result) {
                     is Resource.Error -> {
-                        Log.d("Eroare", result.message.toString())
+                        Log.d("setMacros error", result.message.toString())
                     }
                     is Resource.Loading -> {}
                     is Resource.Success -> {

@@ -28,10 +28,10 @@ object Diary
 data class AdjustMacros(val userInfo : List<String>)
 
 @Serializable
-object AddFood
+data class AddFood(val formattedDate: String)
 
 @Serializable
-object QuickAdd
+data class QuickAdd(val formattedDate: String)
 
 @Serializable
 data class ShowMealsFood(val meal: String, val formattedDate: String )

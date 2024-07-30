@@ -1,5 +1,7 @@
 package com.example.bfit.navdrawerfeatures.quickAdd.presentation
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -28,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,7 +48,8 @@ import com.example.bfit.navdrawerfeatures.goals.presentation.SingleChoiceDialogS
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuickAddScreen(
-    navigateToAddFood : () -> Unit = {}
+    formattedDate:String,
+    navigateToAddFood : (String) -> Unit = {}
 ){
     val viewModel:QuickAddViewModel = hiltViewModel()
     val state= viewModel.state
@@ -89,12 +94,33 @@ fun QuickAddScreen(
         warningDialogAlertMessage.value = message ?: ""
         warningDialogState.value = true
     }
+
+    LaunchedEffect(key1=true) {
+        Log.d("formattedDate1",formattedDate)
+        viewModel.onEvent(QuickAddEvent.FormattedDateChanged(formattedDate))
+    }
+
+    LaunchedEffect(key1 = state.formattedDate) {
+            viewModel.validationEvents.collect { event ->
+                when (event) {
+                    QuickAddViewModel.ValidationEvent.Success -> {
+                        Log.d("Launcheffect date", state.formattedDate)
+                        Toast.makeText(
+                            context,
+                            "Your food has been tracked!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        navigateToAddFood(formattedDate)
+                    }
+                }
+            }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {  },
                 navigationIcon = {
-                    IconButton(onClick = { navigateToAddFood() }) { //navigateToScreen()
+                    IconButton(onClick = { navigateToAddFood(state.formattedDate) }) { //navigateToScreen()
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "NavigateToMain"
@@ -112,7 +138,8 @@ fun QuickAddScreen(
                             showWarningDialog("Please fill in all the required information!",
                                 false,
                                 "Please ensure all fields are filled out correctly before submitting.")
-                        }
+                        } else viewModel.onEvent(QuickAddEvent.SubmitData)
+                        viewModel.onEvent(QuickAddEvent.SubmitData)
                     }) {
                         Icon(
                             ImageVector.vectorResource(id = R.drawable.ic_baseline_check_24),
@@ -172,7 +199,7 @@ fun QuickAddScreen(
     AlertDialogWarning(
         title = warningDialogTitle.value,
         onDismissRequest = { warningDialogState.value = false },
-        onConfirm = {  },
+        onConfirm = { viewModel.onEvent(QuickAddEvent.SubmitData) },
         visible = warningDialogState.value,
         showCancelButton = warningDialogShowCancelButton.value,
         alertMessage = warningDialogAlertMessage.value
@@ -225,7 +252,7 @@ fun QuickAddScreen(
             "Enter carbohydrate amount" -> dataValidator
             "Enter protein amount" -> dataValidator
             "Enter fat amount" -> dataValidator
-            "Enter food name" -> dataValidator
+            "Enter food name" -> {_: String-> true}
             "Enter serving size amount" -> dataValidator
             else -> { _: String -> true }
         },
@@ -237,6 +264,10 @@ fun QuickAddScreen(
             "Enter food name" ,
             "Enter serving size amount" -> "The quantity should be a maximum one decimal number"
             else -> ""
+        },
+        keyboardType =  when (inputDialogTitle.value) {
+            "Enter food name" -> KeyboardType.Unspecified
+            else -> KeyboardType.Number
         }
     )
 
@@ -315,11 +346,3 @@ fun LayoutWithFields(
         }
     }
 }
-
-
-
-
-
-
-
-

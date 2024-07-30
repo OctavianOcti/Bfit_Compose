@@ -63,7 +63,7 @@ import java.util.Date
 @Composable
 fun DiaryScreen(
     navigateToMain: () -> Unit = {},
-    navigateToAddFood: () -> Unit = {},
+    navigateToAddFood: (String) -> Unit = {},
     navigateToShowMealsFoodScreen : (String, String) -> Unit = { _, _ ->}
 ) {
     val viewModel: DiaryViewModel = hiltViewModel()
@@ -234,14 +234,14 @@ fun MealCard(
 @Composable
 fun MainScreen(
     state: DiaryState,
-    navigateToAddFood: () -> Unit,
+    navigateToAddFood: (String) -> Unit,
     navigateToShowMealsFoodScreen: (String, String) -> Unit
 ) {
     Column {
         MealCard(
             mealType = stringResource(id = R.string.breakfast),
             mealImageRes = R.drawable.breakfast,
-            onAddClick = { navigateToAddFood() },
+            onAddClick = { navigateToAddFood(state.formattedDate) },
             onCardClick = { navigateToShowMealsFoodScreen("Breakfast", state.formattedDate) },
             message = if (state.mealTexts.isNotEmpty()) {
                 state.mealTexts[0]
@@ -253,7 +253,7 @@ fun MainScreen(
         MealCard(
             mealType = stringResource(id = R.string.lunch),
             mealImageRes = R.drawable.lunch,
-            onAddClick = { /* Handle add lunch click */ },
+            onAddClick = { navigateToAddFood(state.formattedDate)},
             onCardClick = { navigateToShowMealsFoodScreen("Lunch", state.formattedDate) },
             message = if (state.mealTexts.isNotEmpty()) {
                 state.mealTexts[1]
@@ -265,7 +265,7 @@ fun MainScreen(
         MealCard(
             mealType = stringResource(id = R.string.dinner),
             mealImageRes = R.drawable.dinner,
-            onAddClick = { /* Handle add dinner click */ },
+            onAddClick = { navigateToAddFood(state.formattedDate) },
             onCardClick = { navigateToShowMealsFoodScreen("Dinner", state.formattedDate) },
             message = if (state.mealTexts.isNotEmpty()) {
                 state.mealTexts[2]
@@ -277,8 +277,8 @@ fun MainScreen(
         MealCard(
             mealType = stringResource(id = R.string.snacks),
             mealImageRes = R.drawable.snacks,
-            onAddClick = { /* Handle add snacks click */ },
-            onCardClick = { navigateToShowMealsFoodScreen("Lunch", state.formattedDate) },
+            onAddClick = { navigateToAddFood(state.formattedDate) },
+            onCardClick = { navigateToShowMealsFoodScreen("Snacks", state.formattedDate) },
             message = if (state.mealTexts.isNotEmpty()) {
                 state.mealTexts[3]
             } else {

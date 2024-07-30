@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -289,7 +290,8 @@ fun GoalsScreen(
             "Enter your weight" -> "Weight must be between ${Constants.MIN_WEIGHT}kg and ${Constants.MAX_WEIGHT}kg (maximum one decimal allowed)"
             "Enter your height" -> "Height must be between ${Constants.MIN_HEIGHT}cm and ${Constants.MAX_HEIGHT}cm (maximum one decimal allowed)"
             else -> ""
-        }
+        },
+        keyboardType = KeyboardType.Number
     )
 }
 

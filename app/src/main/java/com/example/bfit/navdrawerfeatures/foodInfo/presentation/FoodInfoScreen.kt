@@ -31,6 +31,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -87,7 +88,7 @@ fun FoodInfoScreen(
         }
     }
 
-    
+
 
     val inputDialogState = remember { mutableStateOf(false) }
     val inputDialogTitle = remember { mutableStateOf("") }
@@ -196,15 +197,15 @@ fun FoodInfoScreen(
         },
         onDismissRequest = {
             inputDialogState.value = false
-           // inputTextServingSize.value= ""
+            // inputTextServingSize.value= ""
 
         },
         onConfirm = {
             when (inputDialogTitle.value) {
-               // "Enter serving size amount" -> viewModel.onEvent(FoodInfoEvent.ServingSizeChanged(inputTextServingSize.value))
+                // "Enter serving size amount" -> viewModel.onEvent(FoodInfoEvent.ServingSizeChanged(inputTextServingSize.value))
                 "Enter serving size amount" -> viewModel.onEvent(FoodInfoEvent.MacrosChanged(inputTextServingSize.value))
             }
-           // inputTextServingSize.value= ""
+            // inputTextServingSize.value= ""
             inputDialogState.value = false
         },
         visible = inputDialogState.value,
@@ -215,7 +216,8 @@ fun FoodInfoScreen(
         validationMessage = when (inputDialogTitle.value) {
             "Enter serving size amount" -> "Enter a valid number (maximum one decimal allowed)"
             else -> ""
-        }
+        },
+        keyboardType = KeyboardType.Number
     )
 
     AlertDialogWarning(
@@ -260,28 +262,28 @@ fun LayoutWithFields(
             )
             Divider()
             FieldRow(
-                label = stringResource(id = R.string.kcal),
+                label = "Kcal",
                 value = state.kcal.ifEmpty { "" },
                 onFieldClick = {},
                 textColor = colorResource(id = R.color.orange)
             )
             Divider()
             FieldRow(
-                label = stringResource(id = R.string.protein_g),
+                label = "Protein",
                 value = state.protein.ifEmpty { "" },
                 onFieldClick = {},
                 textColor = colorResource(id = R.color.orange)
             )
             Divider()
             FieldRow(
-                label = stringResource(id = R.string.carbohydrates),
+                label = "Carb",
                 value = state.carbs.ifEmpty { "" },
                 onFieldClick = {},
                 textColor = colorResource(id = R.color.orange)
             )
             Divider()
             FieldRow(
-                label = stringResource(id = R.string.fat_g),
+                label = "Fat",
                 value = state.fat.ifEmpty { "" },
                 onFieldClick = {},
                 textColor = colorResource(id = R.color.orange)

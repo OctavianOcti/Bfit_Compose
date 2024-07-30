@@ -45,6 +45,9 @@ class ShowMealsFoodViewModel @Inject constructor(
                 Log.d("FoodInfoState", foodInfoState.value.data.toString())
 
             }
+
+            is ShowMealsFoodEvent.DeleteFood -> {
+            }
         }
     }
 
@@ -61,18 +64,6 @@ class ShowMealsFoodViewModel @Inject constructor(
                 }
 
             }
-
-//            showMealFoodRepository.getFood(uid,formattedDate,meal)
-//                .onEach { result->
-//                    when (result){
-//                        is Resource.Error -> {}
-//                        is Resource.Loading -> {}
-//                        is Resource.Success -> {
-//                            _foodInfoState.value=result
-//                           Log.d("Test",_foodInfoState.value.data.toString())
-//                        }
-//                    }
-//                }
         }
     }
 }
