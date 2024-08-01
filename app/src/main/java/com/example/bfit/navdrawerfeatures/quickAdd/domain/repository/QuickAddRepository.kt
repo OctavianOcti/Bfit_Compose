@@ -36,4 +36,13 @@ interface QuickAddRepository {
         foodLabel:String
     ): Response<Boolean>
 
+    suspend fun setNewDocument(
+        uid: String,
+        formattedDate: String,
+        dayInfoMap: Map<String, Any>,
+        foodMap: Map<String, Any>,
+        meal:String,
+        foodLabel:String
+    ): Response<Boolean>
+
 }

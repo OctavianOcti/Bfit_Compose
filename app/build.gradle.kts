@@ -89,6 +89,11 @@ dependencies {
     implementation(libs.androidx.material3.adaptive.navigation.suite)
     implementation (libs.androidx.constraintlayout.compose)
 
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.okhttp)
+    implementation (libs.logging.interceptor)
+
 
 
 }

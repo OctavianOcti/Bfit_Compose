@@ -3,6 +3,7 @@ package com.example.bfit.navdrawerfeatures.quickAdd.presentation
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -34,6 +35,12 @@ class QuickAddViewModel @Inject constructor(
 ) : ViewModel() {
     var state by mutableStateOf(QuickAddState())
         private set
+
+    var  _isFoodDuplicated = mutableStateOf(false)
+    val isFoodDuplicated: State<Boolean> = _isFoodDuplicated
+
+//    private val _isFoodDuplicate = MutableStateFlow(false)
+//    val isFoodDuplicate: StateFlow<Boolean> get() = _isFoodDuplicate
 
     private val validationEventChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
@@ -104,13 +111,17 @@ class QuickAddViewModel @Inject constructor(
 
     private fun getPreviousTotalMacros(){
         viewModelScope.launch {
+            updateMacrosValues()
             updateMaps()
             quickAddRepository.getPreviousTotalMacros(
                 DataProvider.user!!.uid,
                 state.formattedDate
             ).onEach { result ->
                 when (result){
-                    is Resource.Error -> {}
+                    is Resource.Error -> {
+                        Log.d("getPreviousTotalMacros","failure")
+                        setNewDocument()
+                    }
                     is Resource.Loading -> {}
                     is Resource.Success -> {
                         Log.d("getPreviousTotalMacros","success")
@@ -136,11 +147,13 @@ class QuickAddViewModel @Inject constructor(
             ).onEach { result ->
                 when (result){
                     is Resource.Error -> {
-                        Log.d("QuickAddViewModel error",result.message.toString())
+                        Log.d("GetPreviousFoodMacros error",result.message.toString())
                         updateFoodDocument()
                     }
                     is Resource.Loading -> {}
                     is Resource.Success -> {
+                       // _isFoodDuplicate.value = !_isFoodDuplicate.value
+                        _isFoodDuplicated.value= true
                         Log.d("getpreviousFoodMacros","Success")
 
 
@@ -168,11 +181,35 @@ class QuickAddViewModel @Inject constructor(
             state.foodName
         )
         when(response){
-            is Response.Failure -> {}
+            is Response.Failure -> {
+                Log.d("updateFoodDocument","Failure")
+            }
             Response.Loading -> {}
             is Response.Success -> {
                 Log.d("updateFoodDocument","Success")
                 validationEventChannel.send(ValidationEvent.Success)}
+        }
+    }
+
+    private suspend fun setNewDocument() {
+        val response = quickAddRepository.setNewDocument(
+            DataProvider.user!!.uid,
+            state.formattedDate,
+            dayInfoMap,
+            foodMap,
+            state.meal,
+            state.foodName
+        )
+        when (response) {
+            is Response.Failure -> {
+                Log.d("setNewDocument", "Failure")
+            }
+
+            Response.Loading -> {}
+            is Response.Success -> {
+                Log.d("setNewDocument", "Success")
+                validationEventChannel.send(ValidationEvent.Success)
+            }
         }
     }
 
@@ -199,6 +236,7 @@ class QuickAddViewModel @Inject constructor(
         )
     }
 
+
     @SuppressLint("SimpleDateFormat")
     fun convertToFirebaseTimestamp(dateString: String): Timestamp? {
         return try {
@@ -221,16 +259,17 @@ class QuickAddViewModel @Inject constructor(
     private fun updateMaps() {
         val timestamp = convertToFirebaseTimestamp(state.formattedDate)
         timestamp?.let { dayInfoMap["timestamp"] = timestamp }
-        dayInfoMap["total_kcal"] = state.kcal
-        dayInfoMap["total_protein"] = state.protein
-        dayInfoMap["total_carb"] = state.carbs
-        dayInfoMap["total_fat"] = state.fat
+        dayInfoMap["total_kcal"] = state.kcal.toDouble()
+        dayInfoMap["total_protein"] = state.protein.toDouble()
+        dayInfoMap["total_carb"] = state.carbs.toDouble()
+        dayInfoMap["total_fat"] = state.fat.toDouble()
 
         foodMap["kcal"] = round(state.kcal.toDouble())
         foodMap["protein"] = round(state.protein.toDouble())
         foodMap["carb"] = round(state.carbs.toDouble())
         foodMap["fat"] = round(state.fat.toDouble())
         foodMap["serving_size"] = round(state.servingSize.toDouble())
+        foodMap["servingType"]= "food"
     }
 
 

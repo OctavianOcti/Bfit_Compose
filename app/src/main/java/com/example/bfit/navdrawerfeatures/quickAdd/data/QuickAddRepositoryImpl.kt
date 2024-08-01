@@ -40,16 +40,19 @@ class QuickAddRepositoryImpl @Inject constructor(
                     }
                 }
             }
+            Log.d("QuickAddRepositoryImpl", formattedDate)
+            Log.d("QuickAddRepositoryImpl", documentSnapshot.exists().toString())
             if (documentSnapshot.exists()) {
-                val kcalValue = documentSnapshot.getDouble("total_kcal")
-                val proteinValue = documentSnapshot.getDouble("total_protein")
-                val carbValue = documentSnapshot.getDouble("total_carb")
-                val fatValue = documentSnapshot.getDouble("total_fat")
+                    val kcalValue = documentSnapshot.getDouble("total_kcal")
+                    val proteinValue = documentSnapshot.getDouble("total_protein")
+                    val carbValue = documentSnapshot.getDouble("total_carb")
+                    val fatValue = documentSnapshot.getDouble("total_fat")
 
-                val previousTotalKcal = kcalValue?.let { round(it) } ?: 0.0
-                val previousTotalProtein = proteinValue?.let { round(it) } ?: 0.0
-                val previousTotalCarb = carbValue?.let { round(it) } ?: 0.0
-                val previousTotalFat = fatValue?.let { round(it) } ?: 0.0
+                    val previousTotalKcal = kcalValue?.let { round(it) } ?: 0.0
+                    val previousTotalProtein = proteinValue?.let { round(it) } ?: 0.0
+                    val previousTotalCarb = carbValue?.let { round(it) } ?: 0.0
+                    val previousTotalFat = fatValue?.let { round(it) } ?: 0.0
+
 
                 Log.d(
                     "QuickAddRepositoryImpl",
@@ -66,6 +69,7 @@ class QuickAddRepositoryImpl @Inject constructor(
                         )
                     )
                 )
+
             } else {
                 emit(Resource.Error(message = "Document does not exist"))
             }
@@ -100,10 +104,10 @@ class QuickAddRepositoryImpl @Inject constructor(
                 }
             }
             if (documentSnapshot.exists()) {
-                val foodKcalValue = documentSnapshot.getDouble("total_kcal")
-                val foodProteinValue = documentSnapshot.getDouble("total_protein")
-                val foodCarbValue = documentSnapshot.getDouble("total_carb")
-                val foodFatValue = documentSnapshot.getDouble("total_fat")
+                val foodKcalValue = documentSnapshot.getDouble("kcal")
+                val foodProteinValue = documentSnapshot.getDouble("protein")
+                val foodCarbValue = documentSnapshot.getDouble("carb")
+                val foodFatValue = documentSnapshot.getDouble("fat")
 
                 val previousFoodKcal = foodKcalValue?.let { round(it) } ?: 0.0
                 val previousFoodProtein = foodProteinValue?.let { round(it) } ?: 0.0
@@ -126,7 +130,7 @@ class QuickAddRepositoryImpl @Inject constructor(
                     )
                 )
             } else {
-                emit(Resource.Error(message = "Document does not exist"))
+                emit(Resource.Error(message = "Food Document does not exist"))
             }
 
         } catch (e: Exception) {
@@ -190,6 +194,30 @@ class QuickAddRepositoryImpl @Inject constructor(
             Response.Success(true)
 
         }
+    } catch (e: Exception) {
+        Response.Failure(e)
+    }
+
+    override suspend fun setNewDocument(
+        uid: String,
+        formattedDate: String,
+        dayInfoMap: Map<String, Any>,
+        foodMap: Map<String, Any>,
+        meal: String,
+        foodLabel: String
+    ): Response<Boolean> = try {
+
+        val daysCollection = firebaseFirestore.collection("users")
+            .document(uid)
+            .collection("Day Tracker")
+        val daysDocument = daysCollection.document(formattedDate)
+        daysDocument.set(dayInfoMap, SetOptions.merge())
+        daysDocument
+            .collection(meal)
+            .document(foodLabel)
+            .set(foodMap, SetOptions.merge())
+        Response.Success(true)
+
     } catch (e: Exception) {
         Response.Failure(e)
     }

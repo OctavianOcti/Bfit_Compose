@@ -22,6 +22,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -53,6 +54,7 @@ fun QuickAddScreen(
 ){
     val viewModel:QuickAddViewModel = hiltViewModel()
     val state= viewModel.state
+    val isFoodDuplicate = viewModel.isFoodDuplicated
     val context = LocalContext.current
 
     val dialogState = remember { mutableStateOf(false) }
@@ -93,6 +95,16 @@ fun QuickAddScreen(
         warningDialogShowCancelButton.value = showCancel
         warningDialogAlertMessage.value = message ?: ""
         warningDialogState.value = true
+    }
+    LaunchedEffect(key1 = isFoodDuplicate.value) {
+        Log.d("AddScreen isfoodduplicate",isFoodDuplicate.value.toString())
+        if(isFoodDuplicate.value) {
+            Log.d("addscreen","Da")
+            showWarningDialog("Another food with ${state.foodName} name exists",
+                true,
+                "Would you like to override the information for this food?")
+        }
+        else Log.d("addscrenn","Nu")
     }
 
     LaunchedEffect(key1=true) {
@@ -139,7 +151,7 @@ fun QuickAddScreen(
                                 false,
                                 "Please ensure all fields are filled out correctly before submitting.")
                         } else viewModel.onEvent(QuickAddEvent.SubmitData)
-                        viewModel.onEvent(QuickAddEvent.SubmitData)
+                        //viewModel.onEvent(QuickAddEvent.SubmitData)
                     }) {
                         Icon(
                             ImageVector.vectorResource(id = R.drawable.ic_baseline_check_24),
