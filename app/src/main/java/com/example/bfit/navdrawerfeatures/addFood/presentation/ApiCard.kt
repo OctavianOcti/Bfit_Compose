@@ -1,5 +1,6 @@
-package com.example.bfit.navdrawerfeatures.addFood
+package com.example.bfit.navdrawerfeatures.addFood.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,14 +18,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.bfit.R
+import com.example.bfit.navdrawerfeatures.showMealsFood.domain.FoodInfoModel
 
 @Composable
-@Preview(showBackground = true)
-fun ApiCard() {
+fun ApiCard(
+    foodInfoModel: FoodInfoModel,
+    onCLick: () -> Unit ={}
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 8.dp, top = 10.dp, end = 8.dp, bottom = 5.dp),
+            .padding(start = 8.dp, top = 10.dp, end = 8.dp, bottom = 5.dp)
+            .clickable { onCLick() },
         colors = CardDefaults.cardColors(
             containerColor = colorResource(id = R.color.ic_bfit_logo_background),
         ),
@@ -39,7 +44,7 @@ fun ApiCard() {
             val (mealLabel, energy, serving, brand) = createRefs()
 
             Text(
-                text = stringResource(R.string.food),
+                text = foodInfoModel.label,
                 color = colorResource(id = R.color.blueForDarkGrey),
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
@@ -50,7 +55,7 @@ fun ApiCard() {
             )
 
             Text(
-                text = stringResource(R.string.kcal_simple),
+                text = foodInfoModel.enercKcal,
                 color = Color(0xFFFF5722),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
@@ -74,7 +79,7 @@ fun ApiCard() {
             )
 
             Text(
-                text = stringResource(R.string.brand),
+                text = foodInfoModel.brand,
                 color = Color.Gray, // Replace with your color
                 fontSize = 12.sp,
                 modifier = Modifier.constrainAs(brand) {

@@ -1,6 +1,8 @@
 package com.example.bfit.navdrawerfeatures.di
 
 
+import com.example.bfit.navdrawerfeatures.addFood.data.repository.AddFoodRepositoryImpl
+import com.example.bfit.navdrawerfeatures.addFood.domain.repository.AddFoodRepository
 import com.example.bfit.navdrawerfeatures.adjust_calories.data.repository.MacrosRepositoryImpl
 import com.example.bfit.navdrawerfeatures.adjust_calories.domain.repository.MacrosRepository
 import com.example.bfit.navdrawerfeatures.diary.data.repository.DiaryRepositoryImpl
@@ -45,4 +47,7 @@ abstract class  RepositoryModule {
 
     @Binds
     abstract fun bindShowMealsFoodInfoRepository(showMealsFoodImpl: ShowMealsFoodImpl) : ShowMealsFoodRepository
+
+    @Binds
+    abstract fun bindAddFoodRepository(addFoodRepositoryImpl: AddFoodRepositoryImpl): AddFoodRepository
 }

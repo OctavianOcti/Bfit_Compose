@@ -1,4 +1,4 @@
-package com.example.bfit.navdrawerfeatures.addFood
+package com.example.bfit.navdrawerfeatures.addFood.presentation
 
 import android.util.Log
 import androidx.compose.animation.core.Animatable
@@ -22,7 +22,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
@@ -37,6 +40,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,12 +55,16 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bfit.R
+import com.example.bfit.navdrawerfeatures.diary.presentation.DiaryViewModel
+import com.example.bfit.navdrawerfeatures.showMealsFood.domain.FoodInfoModel
 import kotlinx.coroutines.launch
 
 
@@ -66,14 +74,18 @@ import kotlinx.coroutines.launch
 fun AddFoodScreen(
     formattedDate:String,
     navigateToDiary: () -> Unit = {},
-    navigateToQuickAdd: (String) -> Unit = {}
+    navigateToQuickAdd: (String) -> Unit = {},
+    navigateToFoodInfo: (FoodInfoModel, String, String) -> Unit = { _, _, _ -> }
 ) {
+    val viewModel: AddFoodViewModel = hiltViewModel()
+    val foodInfoState by viewModel.foodInfoState.collectAsState()
+    val state = viewModel.state
 
     LaunchedEffect(key1 = formattedDate) {
         Log.d("AddFoodScreen date",formattedDate)
     }
     Scaffold(
-        topBar = { AddFoodTopBar(navigateToDiary) }
+        topBar = { AddFoodTopBar(navigateToDiary,viewModel,state) }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
@@ -88,19 +100,22 @@ fun AddFoodScreen(
             item {
                 FoodMealSection()
             }
-            items(10) { // Assuming you have 10 items, adjust accordingly
-                ApiCard()
+            items(foodInfoState) { foodInfo ->
+                ApiCard(
+                    foodInfoModel = foodInfo,
+                    onCLick = { navigateToFoodInfo(foodInfo, "Select your meal", formattedDate) }
+
+                )
             }
+
+            }
+
         }
-    }
-
 }
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddFoodTopBar(navigateToDiary: () -> Unit) {
+fun AddFoodTopBar(navigateToDiary: () -> Unit,viewModel: AddFoodViewModel,state: AddFoodState) {
     TopAppBar(
         title = {
             ConstraintLayout(
@@ -122,26 +137,26 @@ fun AddFoodTopBar(navigateToDiary: () -> Unit) {
                     )
                 }
 
-                TextField(
-                    value = "",
-                    onValueChange = {},
-                    modifier = Modifier
-                        .constrainAs(searchField) {
-                            start.linkTo(backIcon.end, margin = 0.dp)
-                            end.linkTo(scanIcon.start, margin = 10.dp)
-                            top.linkTo(parent.top, margin = 10.dp)
-                            bottom.linkTo(parent.bottom, margin = 10.dp)
-                            width = Dimension.fillToConstraints
-                        }
-                        .height(56.dp)  // Set a proper height for the TextField
-                        .padding(horizontal = 8.dp),  // Add padding inside the TextField
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search Icon"
-                        )
-                    },
-                    colors = TextFieldDefaults.colors().copy(
+                        TextField(
+                            value = state.text,
+                            onValueChange = { viewModel.onEvent(AddFoodEvent.SearchTextChanged(it)) },
+                            modifier = Modifier
+                                .constrainAs(searchField) {
+                                    start.linkTo(backIcon.end, margin = 0.dp)
+                                    end.linkTo(scanIcon.start, margin = 10.dp)
+                                    top.linkTo(parent.top, margin = 10.dp)
+                                    bottom.linkTo(parent.bottom, margin = 10.dp)
+                                    width = Dimension.fillToConstraints
+                                }
+                                .height(56.dp)  // Set a proper height for the TextField
+                                .padding(horizontal = 8.dp),  // Add padding inside the TextField
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "Search Icon"
+                                )
+                            },
+                            colors = TextFieldDefaults.colors().copy(
                         focusedContainerColor = colorResource(id = R.color.darkGrey),
                         focusedTextColor = Color.White,
                         unfocusedTextColor = colorResource(id = R.color.blueForDarkGrey),
@@ -149,17 +164,27 @@ fun AddFoodTopBar(navigateToDiary: () -> Unit) {
                         unfocusedContainerColor = colorResource(id = R.color.darkGrey),
                         unfocusedIndicatorColor = Color.Transparent
                     ),
-                    placeholder = {
-                        Text(
-                            text = stringResource(id = R.string.search_for_food_meal),
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.search_for_food_meal),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            },
+                            shape = RoundedCornerShape(20.dp),  // Adjust shape if needed for smaller height
+                            singleLine = true,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    // Call your function here
+                                    viewModel.onEvent(AddFoodEvent.SearchForFood(state.text))
+                                }
+                            )
                         )
-                    },
-                    shape = RoundedCornerShape(20.dp),  // Adjust shape if needed for smaller height
-                    singleLine = true,
-                    maxLines = 1
-                )
+
 
                 Image(
                     painter = painterResource(id = R.drawable.search_barcode_icon),
@@ -364,5 +389,3 @@ fun FoodMealSection() {
         }
     }
 }
-
-

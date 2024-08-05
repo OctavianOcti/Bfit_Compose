@@ -1,5 +1,8 @@
 package com.example.bfit.navdrawerfeatures.di
 
+import com.example.bfit.navdrawerfeatures.addFood.domain.repository.AddFoodRepository
+import com.example.bfit.navdrawerfeatures.addFood.domain.use_case.AddFoodUseCases
+import com.example.bfit.navdrawerfeatures.addFood.domain.use_case.GetFoodUseCase
 import com.example.bfit.navdrawerfeatures.adjust_calories.domain.MacrosUseCases
 import com.example.bfit.navdrawerfeatures.adjust_calories.domain.GetClosestDivisibleValue
 import com.example.bfit.navdrawerfeatures.adjust_calories.domain.ValidateCalorieAmount
@@ -21,6 +24,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import javax.inject.Inject
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -55,6 +59,12 @@ object UseCaseModule {
     fun provideFoodInfoUseCases(): FoodInfoUseCases{
         return FoodInfoUseCases(
             validateServing = ValidateServing(AndroidServingPatternValidator())
+        )
+    }
+    @Provides
+    fun provideAddFoodUseCases(addFoodRepository: AddFoodRepository): AddFoodUseCases{
+        return AddFoodUseCases(
+            getFoodUseCase = GetFoodUseCase(addFoodRepository)
         )
     }
 }

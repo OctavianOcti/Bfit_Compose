@@ -9,7 +9,7 @@ import androidx.navigation.toRoute
 import com.example.bfit.authentication.presentation.login.LoginScreen
 import com.example.bfit.authentication.presentation.register.RegisterScreen
 import com.example.bfit.main.MainScreen
-import com.example.bfit.navdrawerfeatures.addFood.AddFoodScreen
+import com.example.bfit.navdrawerfeatures.addFood.presentation.AddFoodScreen
 import com.example.bfit.navdrawerfeatures.adjust_calories.presentation.AdjustMacrosScreen
 import com.example.bfit.navdrawerfeatures.diary.presentation.DiaryScreen
 import com.example.bfit.navdrawerfeatures.foodInfo.presentation.FoodInfoScreen
@@ -75,7 +75,8 @@ fun MyNavigationHost(
             AddFoodScreen(
                 formattedDate = addFoodInfo.formattedDate,
                 {navController.navigate(Diary)},
-                {date->navController.navigate(QuickAdd(date))}
+                {date->navController.navigate(QuickAdd(date))},
+                {foodInfoModel, meal, formattedDate ->navController.navigate(FoodInfo(foodInfoModel,meal,formattedDate))  }
             )
         }
         composable<QuickAdd>{
@@ -85,11 +86,12 @@ fun MyNavigationHost(
             ) { date -> navController.navigate(AddFood(date)) }
         }
         composable<ShowMealsFood> {
-            val meal: ShowMealsFood = it.toRoute()
+            val mealRouteData: ShowMealsFood = it.toRoute()
             ShowMealFoodScreen(
-                meal =meal.meal,
-                formattedDate =  meal.formattedDate,
+                meal = mealRouteData.meal,
+                formattedDate =  mealRouteData.formattedDate,
                 navigateToDiary = {navController.navigate(Diary)},
+               // navigateToDiary = {navController.navigateUp()},
                 {foodInfoModel, meal, formattedDate ->navController.navigate(FoodInfo(foodInfoModel,meal,formattedDate))  }
                 // navigateToFoodInfo = {navController.navigate(FoodInfo(it))}
             )

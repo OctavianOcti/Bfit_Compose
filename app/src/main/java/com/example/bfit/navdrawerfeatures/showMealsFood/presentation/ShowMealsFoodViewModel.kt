@@ -28,7 +28,7 @@ class ShowMealsFoodViewModel @Inject constructor(
         private set
 //    private val _foodInfoState = MutableStateFlow<Resource<List<FoodInfoModel>>>(Resource.Loading())
 //    val foodInfoState: StateFlow<Resource<List<FoodInfoModel>>> = _foodInfoState
-private val _foodInfoState = MutableStateFlow<List<FoodInfoModel>>(emptyList())
+    private val _foodInfoState = MutableStateFlow<List<FoodInfoModel>>(emptyList())
     val foodInfoState: StateFlow<List<FoodInfoModel>> = _foodInfoState
 
 
