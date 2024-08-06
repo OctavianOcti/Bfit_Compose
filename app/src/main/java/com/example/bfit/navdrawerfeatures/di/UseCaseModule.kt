@@ -2,6 +2,7 @@ package com.example.bfit.navdrawerfeatures.di
 
 import com.example.bfit.navdrawerfeatures.addFood.domain.repository.AddFoodRepository
 import com.example.bfit.navdrawerfeatures.addFood.domain.use_case.AddFoodUseCases
+import com.example.bfit.navdrawerfeatures.addFood.domain.use_case.GetFoodByBarcodeUseCase
 import com.example.bfit.navdrawerfeatures.addFood.domain.use_case.GetFoodUseCase
 import com.example.bfit.navdrawerfeatures.adjust_calories.domain.MacrosUseCases
 import com.example.bfit.navdrawerfeatures.adjust_calories.domain.GetClosestDivisibleValue
@@ -64,7 +65,8 @@ object UseCaseModule {
     @Provides
     fun provideAddFoodUseCases(addFoodRepository: AddFoodRepository): AddFoodUseCases{
         return AddFoodUseCases(
-            getFoodUseCase = GetFoodUseCase(addFoodRepository)
+            getFoodUseCase = GetFoodUseCase(addFoodRepository),
+            getFoodByBarcodeUseCase = GetFoodByBarcodeUseCase(addFoodRepository)
         )
     }
 }

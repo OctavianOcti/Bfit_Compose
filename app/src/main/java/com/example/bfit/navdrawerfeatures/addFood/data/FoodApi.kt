@@ -11,4 +11,12 @@ interface FoodApi {
         @Query("app_key") appKey: String,
         @Query("ingr") ingr: String
     ): FoodAPIResult
+
+    @GET("parser")
+    suspend fun doGetFoodInfoByBarcode(
+        @Query("app_id") appId: String,
+        @Query("app_key") appKey: String,
+        @Query("upc") upc: String
+    ): FoodAPIResult
+
 }

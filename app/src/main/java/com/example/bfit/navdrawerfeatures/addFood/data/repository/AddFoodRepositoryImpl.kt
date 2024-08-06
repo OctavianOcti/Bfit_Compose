@@ -12,4 +12,8 @@ class AddFoodRepositoryImpl @Inject constructor(
     override suspend fun getFood(food:String): FoodAPIResult {
         return foodApi.doGetFoodInfo(Constants.APP_ID,Constants.APP_KEY,food)
     }
+
+    override suspend fun getFoodByBarcode(upc: String): FoodAPIResult {
+        return foodApi.doGetFoodInfoByBarcode(Constants.APP_ID,Constants.APP_KEY, upc)
+    }
 }

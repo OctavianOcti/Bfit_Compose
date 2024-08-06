@@ -1,5 +1,6 @@
 package com.example.bfit.navdrawerfeatures.addFood.presentation
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -49,7 +50,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
@@ -63,16 +70,15 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bfit.R
-import com.example.bfit.navdrawerfeatures.diary.presentation.DiaryViewModel
 import com.example.bfit.navdrawerfeatures.showMealsFood.domain.FoodInfoModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.launch
 
-
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddFoodScreen(
-    formattedDate:String,
+    formattedDate: String,
     navigateToDiary: () -> Unit = {},
     navigateToQuickAdd: (String) -> Unit = {},
     navigateToFoodInfo: (FoodInfoModel, String, String) -> Unit = { _, _, _ -> }
@@ -80,47 +86,76 @@ fun AddFoodScreen(
     val viewModel: AddFoodViewModel = hiltViewModel()
     val foodInfoState by viewModel.foodInfoState.collectAsState()
     val state = viewModel.state
+    var showCameraPreview by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = formattedDate) {
-        Log.d("AddFoodScreen date",formattedDate)
+        Log.d("AddFoodScreen date", formattedDate)
     }
+
     Scaffold(
-        topBar = { AddFoodTopBar(navigateToDiary,viewModel,state) }
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(id = R.color.darkGrey))
-                .padding(paddingValues),
-            contentPadding = PaddingValues(vertical = 8.dp)
-        ) {
-            item {
-                QuickAddSection(navigateToQuickAdd,formattedDate)
+        topBar = {
+            AddFoodTopBar(navigateToDiary, viewModel, state) {
+                showCameraPreview = it
             }
-            item {
-                FoodMealSection()
+        },
+        content = { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(colorResource(id = R.color.darkGrey)) // Ensure background is consistent
+            ) {
+                if (showCameraPreview) {
+                    BarcodeScanner(
+                        showCameraPreview = showCameraPreview,
+                        onDismiss = { showCameraPreview = false },
+                        onBarcodeScanned = { scannedBarcode ->
+                            viewModel.onEvent(AddFoodEvent.SearchByBarcode(scannedBarcode))
+                        }
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = 8.dp) // Adjust padding as needed
+                    ) {
+                        item {
+                            QuickAddSection(navigateToQuickAdd, formattedDate)
+                        }
+                        item {
+                            FoodMealSection()
+                        }
+                        items(foodInfoState) { foodInfo ->
+                            ApiCard(
+                                foodInfoModel = foodInfo,
+                                onCLick = { navigateToFoodInfo(foodInfo, "Select your meal", formattedDate) }
+                            )
+                        }
+                    }
+                }
             }
-            items(foodInfoState) { foodInfo ->
-                ApiCard(
-                    foodInfoModel = foodInfo,
-                    onCLick = { navigateToFoodInfo(foodInfo, "Select your meal", formattedDate) }
-
-                )
-            }
-
-            }
-
         }
+    )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
-fun AddFoodTopBar(navigateToDiary: () -> Unit,viewModel: AddFoodViewModel,state: AddFoodState) {
+fun AddFoodTopBar(
+    navigateToDiary: () -> Unit,
+    viewModel: AddFoodViewModel,
+    state: AddFoodState,
+    onCameraPreviewToggle: (Boolean) -> Unit
+) {
+    val cameraPermission = rememberPermissionState(android.Manifest.permission.CAMERA)
+
+    LaunchedEffect(key1 = true) {
+        if (!cameraPermission.status.isGranted) {
+            cameraPermission.launchPermissionRequest()
+        }
+    }
+
     TopAppBar(
         title = {
-            ConstraintLayout(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
                 val (backIcon, searchField, scanIcon) = createRefs()
 
                 IconButton(
@@ -137,26 +172,26 @@ fun AddFoodTopBar(navigateToDiary: () -> Unit,viewModel: AddFoodViewModel,state:
                     )
                 }
 
-                        TextField(
-                            value = state.text,
-                            onValueChange = { viewModel.onEvent(AddFoodEvent.SearchTextChanged(it)) },
-                            modifier = Modifier
-                                .constrainAs(searchField) {
-                                    start.linkTo(backIcon.end, margin = 0.dp)
-                                    end.linkTo(scanIcon.start, margin = 10.dp)
-                                    top.linkTo(parent.top, margin = 10.dp)
-                                    bottom.linkTo(parent.bottom, margin = 10.dp)
-                                    width = Dimension.fillToConstraints
-                                }
-                                .height(56.dp)  // Set a proper height for the TextField
-                                .padding(horizontal = 8.dp),  // Add padding inside the TextField
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Search,
-                                    contentDescription = "Search Icon"
-                                )
-                            },
-                            colors = TextFieldDefaults.colors().copy(
+                TextField(
+                    value = state.text,
+                    onValueChange = { viewModel.onEvent(AddFoodEvent.SearchTextChanged(it)) },
+                    modifier = Modifier
+                        .constrainAs(searchField) {
+                            start.linkTo(backIcon.end, margin = 0.dp)
+                            end.linkTo(scanIcon.start, margin = 10.dp)
+                            top.linkTo(parent.top, margin = 10.dp)
+                            bottom.linkTo(parent.bottom, margin = 10.dp)
+                            width = Dimension.fillToConstraints
+                        }
+                        .height(56.dp)
+                        .padding(horizontal = 8.dp),
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search Icon"
+                        )
+                    },
+                    colors = TextFieldDefaults.colors().copy(
                         focusedContainerColor = colorResource(id = R.color.darkGrey),
                         focusedTextColor = Color.White,
                         unfocusedTextColor = colorResource(id = R.color.blueForDarkGrey),
@@ -164,39 +199,43 @@ fun AddFoodTopBar(navigateToDiary: () -> Unit,viewModel: AddFoodViewModel,state:
                         unfocusedContainerColor = colorResource(id = R.color.darkGrey),
                         unfocusedIndicatorColor = Color.Transparent
                     ),
-                            placeholder = {
-                                Text(
-                                    text = stringResource(id = R.string.search_for_food_meal),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            },
-                            shape = RoundedCornerShape(20.dp),  // Adjust shape if needed for smaller height
-                            singleLine = true,
+                    placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.search_for_food_meal),
                             maxLines = 1,
-                            keyboardOptions = KeyboardOptions.Default.copy(
-                                imeAction = ImeAction.Done
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onDone = {
-                                    // Call your function here
-                                    viewModel.onEvent(AddFoodEvent.SearchForFood(state.text))
-                                }
-                            )
+                            overflow = TextOverflow.Ellipsis
                         )
-
+                    },
+                    shape = RoundedCornerShape(20.dp),
+                    singleLine = true,
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            viewModel.onEvent(AddFoodEvent.SearchForFood(state.text))
+                        }
+                    )
+                )
 
                 Image(
                     painter = painterResource(id = R.drawable.search_barcode_icon),
                     contentDescription = stringResource(id = R.string.imgscanbarcode),
                     modifier = Modifier
-                        .size(48.dp) // Set the desired size for the icon
+                        .size(48.dp)
                         .constrainAs(scanIcon) {
                             top.linkTo(parent.top)
                             end.linkTo(parent.end, margin = 15.dp)
                             bottom.linkTo(parent.bottom)
                         }
-                        .clickable { /* TODO: Handle barcode scan action */ }
+                        .clickable {
+                            if (cameraPermission.status.isGranted) {
+                                onCameraPreviewToggle(true)
+                            } else {
+                                cameraPermission.launchPermissionRequest()
+                            }
+                        }
                 )
             }
         },
@@ -204,63 +243,88 @@ fun AddFoodTopBar(navigateToDiary: () -> Unit,viewModel: AddFoodViewModel,state:
             containerColor = colorResource(id = R.color.ic_bfit_logo_background),
             titleContentColor = Color.White,
             navigationIconContentColor = Color.White
-        ),
-        actions = {
-            // Add any actions if needed
-        },
+        )
     )
 }
-@Composable
-fun shakeAnimation(
-    modifier: Modifier = Modifier,
-    onShake: () -> Unit = {}
-): Modifier {
-    val shakeOffset = remember { Animatable(0f) }
-    val coroutineScope = rememberCoroutineScope()
 
-    fun shake() {
-        coroutineScope.launch {
-            shakeOffset.animateTo(
-                targetValue = 16f,
-                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
-            )
-            shakeOffset.animateTo(
-                targetValue = -16f,
-                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
-            )
-            shakeOffset.animateTo(
-                targetValue = 8f,
-                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
-            )
-            shakeOffset.animateTo(
-                targetValue = -8f,
-                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
-            )
-            shakeOffset.animateTo(
-                targetValue = 0f,
-                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
-            )
-            onShake()
+
+@Composable
+fun BarcodeScanner(
+    showCameraPreview: Boolean,
+    onDismiss: () -> Unit,
+    onBarcodeScanned: (String) -> Unit
+) {
+    val camera = remember { BarcodeCamera() }
+    var lastScannedBarcode by remember { mutableStateOf<String?>(null) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (showCameraPreview) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .drawWithContent {
+                            val canvasWidth = size.width
+                            val canvasHeight = size.height
+                            val width = canvasWidth * .9f
+                            val height = width * 3 / 4f
+
+                            drawContent()
+
+                            drawRect(Color(0x99000000))
+
+                            drawRoundRect(
+                                topLeft = Offset(
+                                    (canvasWidth - width) / 2,
+                                    canvasHeight * .3f
+                                ),
+                                size = Size(width, height),
+                                color = Color.Transparent,
+                                cornerRadius = CornerRadius(24.dp.toPx()),
+                                blendMode = BlendMode.SrcIn
+                            )
+
+                            drawRoundRect(
+                                topLeft = Offset(
+                                    (canvasWidth - width) / 2,
+                                    canvasHeight * .3f
+                                ),
+                                color = Color.White,
+                                size = Size(width, height),
+                                cornerRadius = CornerRadius(24.dp.toPx()),
+                                style = Stroke(
+                                    width = 2.dp.toPx()
+                                ),
+                                blendMode = BlendMode.Src
+                            )
+                        }
+                ) {
+                    camera.CameraPreview(
+                        onBarcodeScanned = { barcode ->
+                            barcode?.displayValue?.takeIf { it.isNotBlank() }?.let { scannedBarcode ->
+                                if (scannedBarcode != lastScannedBarcode) {
+                                    lastScannedBarcode = scannedBarcode
+                                    Log.d("BarcodeScanner", "Scanned Barcode: $scannedBarcode")
+                                    onDismiss()
+                                    onBarcodeScanned(scannedBarcode)
+                                }
+                            }
+                        }
+                    )
+                }
+            }
         }
     }
-
-    return modifier
-        .graphicsLayer {
-            translationX = shakeOffset.value
-        }
-        .pointerInput(Unit) {
-            detectTapGestures(onTap = { shake() })
-        }
 }
 
 @Composable
-fun QuickAddSection(onClick: (String) -> Unit,formattedDate: String) {
+fun QuickAddSection(onClick: (String) -> Unit, formattedDate: String) {
     var isShaking by remember { mutableStateOf(false) }
     val shakeModifier = shakeAnimation(
         modifier = Modifier,
         onShake = {
-            // Optionally trigger any additional logic here
-
             isShaking = true
             onClick(formattedDate)
         }
@@ -286,8 +350,7 @@ fun QuickAddSection(onClick: (String) -> Unit,formattedDate: String) {
         Image(
             painter = painterResource(id = R.drawable.quick_add_calories),
             contentDescription = stringResource(id = R.string.imgmanualaddfood),
-            modifier = Modifier
-                .size(40.dp)
+            modifier = Modifier.size(40.dp)
         )
         Spacer(modifier = Modifier.width(20.dp))
         Box(
@@ -331,7 +394,7 @@ fun FoodMealSection() {
                     colorResource(id = R.color.ic_bfit_logo_background),
                     shape = RoundedCornerShape(20.dp)
                 )
-                .clip(RoundedCornerShape(16.dp)),
+                .clip(RoundedCornerShape(16.dp))
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -366,7 +429,7 @@ fun FoodMealSection() {
                     colorResource(id = R.color.ic_bfit_logo_background),
                     shape = RoundedCornerShape(20.dp)
                 )
-                .clip(RoundedCornerShape(16.dp)),
+                .clip(RoundedCornerShape(16.dp))
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -388,4 +451,48 @@ fun FoodMealSection() {
             }
         }
     }
+}
+
+@SuppressLint("ModifierFactoryExtensionFunction")
+@Composable
+fun shakeAnimation(
+    modifier: Modifier = Modifier,
+    onShake: () -> Unit = {}
+): Modifier {
+    val shakeOffset = remember { Animatable(0f) }
+    val coroutineScope = rememberCoroutineScope()
+
+    fun shake() {
+        coroutineScope.launch {
+            shakeOffset.animateTo(
+                targetValue = 16f,
+                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
+            )
+            shakeOffset.animateTo(
+                targetValue = -16f,
+                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
+            )
+            shakeOffset.animateTo(
+                targetValue = 8f,
+                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
+            )
+            shakeOffset.animateTo(
+                targetValue = -8f,
+                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
+            )
+            shakeOffset.animateTo(
+                targetValue = 0f,
+                animationSpec = tween(durationMillis = 50, easing = LinearEasing)
+            )
+            onShake()
+        }
+    }
+
+    return modifier
+        .graphicsLayer {
+            translationX = shakeOffset.value
+        }
+        .pointerInput(Unit) {
+            detectTapGestures(onTap = { shake() })
+        }
 }

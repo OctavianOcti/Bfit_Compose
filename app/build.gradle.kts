@@ -93,6 +93,15 @@ dependencies {
     implementation (libs.converter.gson)
     implementation (libs.okhttp)
     implementation (libs.logging.interceptor)
+    // ML Kit
+    implementation(libs.barcode.scanning)
+    // CameraX
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+
+    // Permissions
+    implementation(libs.accompanist.permissions)
 
 
 
