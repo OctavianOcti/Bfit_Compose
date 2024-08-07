@@ -39,3 +39,6 @@ data class ShowMealsFood(val meal: String, val formattedDate: String )
 @Serializable
 data class FoodInfo(val foodInfo: FoodInfoModel, val meal:String,val formattedDate: String)
 
+@Serializable
+data class ApiFoodInfo(val foodInfo: FoodInfoModel, val meal:String,val formattedDate: String)
+

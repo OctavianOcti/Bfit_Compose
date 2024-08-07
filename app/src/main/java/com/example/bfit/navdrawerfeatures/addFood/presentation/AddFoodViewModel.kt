@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.bfit.navdrawerfeatures.addFood.domain.use_case.AddFoodUseCases
 import com.example.bfit.navdrawerfeatures.common.presentation.domain.round
 import com.example.bfit.navdrawerfeatures.showMealsFood.domain.FoodInfoModel
+import com.example.bfit.util.Constants
 import com.example.bfit.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class AddFoodViewModel @Inject constructor(
     private val addFoodUseCases: AddFoodUseCases
 ) : ViewModel() {
+
     private val _foodDetailState = mutableStateOf(FoodDetailState())
 
     var state by mutableStateOf(AddFoodState())
@@ -83,7 +85,7 @@ class AddFoodViewModel @Inject constructor(
                                 fat,
                                 carbs,
                                 fibers,
-                                "",
+                                Constants.DEFAULT_SERVING_SIZE,
                                 ""
                             )
                         }
@@ -125,7 +127,7 @@ class AddFoodViewModel @Inject constructor(
                                 fat,
                                 carbs,
                                 fibers,
-                                "",
+                                Constants.DEFAULT_SERVING_SIZE,
                                 ""
                             )
                         }

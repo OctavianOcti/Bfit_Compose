@@ -11,6 +11,7 @@ import com.example.bfit.authentication.presentation.register.RegisterScreen
 import com.example.bfit.main.MainScreen
 import com.example.bfit.navdrawerfeatures.addFood.presentation.AddFoodScreen
 import com.example.bfit.navdrawerfeatures.adjust_calories.presentation.AdjustMacrosScreen
+import com.example.bfit.navdrawerfeatures.apiFoodInfo.presentation.ApiFoodInfoScreen
 import com.example.bfit.navdrawerfeatures.diary.presentation.DiaryScreen
 import com.example.bfit.navdrawerfeatures.foodInfo.presentation.FoodInfoScreen
 import com.example.bfit.navdrawerfeatures.goals.presentation.GoalsScreen
@@ -76,7 +77,7 @@ fun MyNavigationHost(
                 formattedDate = addFoodInfo.formattedDate,
                 {navController.navigate(Diary)},
                 {date->navController.navigate(QuickAdd(date))},
-                {foodInfoModel, meal, formattedDate ->navController.navigate(FoodInfo(foodInfoModel,meal,formattedDate))  }
+                {foodInfoModel, meal, formattedDate ->navController.navigate(ApiFoodInfo(foodInfoModel,meal,formattedDate))  }
             )
         }
         composable<QuickAdd>{
@@ -109,6 +110,17 @@ fun MyNavigationHost(
                 navigateToShowMealsFood = {navController.navigate(ShowMealsFood(foodInfo.meal,foodInfo.formattedDate))}
             )
 
+        }
+        composable<ApiFoodInfo> (
+            typeMap = mapOf(typeOf<FoodInfoModel>() to parcelableType<FoodInfoModel>())
+        ){
+            val apiFoodInfo: ApiFoodInfo = it.toRoute()
+            ApiFoodInfoScreen(
+                foodInfoModel = apiFoodInfo.foodInfo,
+                meal = apiFoodInfo.meal,
+                formattedDate = apiFoodInfo.formattedDate,
+                navigateToAddFood = {navController.navigate(AddFood(it))}
+            )
         }
 
     }

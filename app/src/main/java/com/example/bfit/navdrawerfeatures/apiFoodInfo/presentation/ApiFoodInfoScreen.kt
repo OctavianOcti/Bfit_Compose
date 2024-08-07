@@ -1,6 +1,7 @@
-package com.example.bfit.navdrawerfeatures.foodInfo.presentation
+package com.example.bfit.navdrawerfeatures.apiFoodInfo.presentation
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,57 +38,36 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.bfit.R
-import com.example.bfit.authentication.presentation.login.LoginFormEvent
-import com.example.bfit.authentication.presentation.login.LoginViewModel
 import com.example.bfit.navdrawerfeatures.common.presentation.AlertDialogWarning
 import com.example.bfit.navdrawerfeatures.common.presentation.Divider
 import com.example.bfit.navdrawerfeatures.common.presentation.FieldRow
 import com.example.bfit.navdrawerfeatures.common.presentation.LogoSection
 import com.example.bfit.navdrawerfeatures.common.presentation.TextInputDialog
-import com.example.bfit.navdrawerfeatures.goals.presentation.GoalsEvent
+import com.example.bfit.navdrawerfeatures.common.presentation.getStringArrayFromResource
+import com.example.bfit.navdrawerfeatures.goals.presentation.SingleChoiceDialogSample
+import com.example.bfit.navdrawerfeatures.quickAdd.presentation.QuickAddEvent
+import com.example.bfit.navdrawerfeatures.quickAdd.presentation.QuickAddViewModel
 import com.example.bfit.navdrawerfeatures.showMealsFood.domain.FoodInfoModel
-import com.example.bfit.util.Constants
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FoodInfoScreen(
+fun ApiFoodInfoScreen(
     foodInfoModel: FoodInfoModel,
     meal:String,
     formattedDate:String,
-    navigateToShowMealsFood: ()-> Unit ={}
+   // navigateToShowMealsFood: ()-> Unit ={}
+    navigateToAddFood: (String) -> Unit = {},
 ) {
-    val viewModel: FoodInfoViewModel = hiltViewModel()
+    val viewModel: ApiFoodInfoViewModel = hiltViewModel()
     val state = viewModel.state
+    val isFoodDuplicate = viewModel.isFoodDuplicated
     val context = LocalContext.current
-    LaunchedEffect(key1 = foodInfoModel) {
-        Log.d("foodInfoScreen", foodInfoModel.toString())
-        if(!foodInfoModel.isEmpty()){
-            viewModel.onEvent(FoodInfoEvent.MealChanged(meal))
-            viewModel.onEvent(FoodInfoEvent.ServingSizeChanged(foodInfoModel.servingSize))
-            viewModel.onEvent(FoodInfoEvent.KcalChanged(foodInfoModel.enercKcal))
-            viewModel.onEvent(FoodInfoEvent.CarbsChanged(foodInfoModel.carb))
-            viewModel.onEvent(FoodInfoEvent.ProteinChanged(foodInfoModel.prot))
-            viewModel.onEvent(FoodInfoEvent.FatChanged(foodInfoModel.fat))
-            viewModel.onEvent(FoodInfoEvent.FoodNameChanged(foodInfoModel.label))
-            viewModel.onEvent(FoodInfoEvent.FoodBrandChanged(foodInfoModel.brand))
-            viewModel.onEvent(FoodInfoEvent.FormattedDateChanged(formattedDate))
 
-            viewModel.onEvent(FoodInfoEvent.PreviousFoodKcalChanged(foodInfoModel.enercKcal))
-            viewModel.onEvent(FoodInfoEvent.PreviousFoodProteinChanged(foodInfoModel.prot))
-            viewModel.onEvent(FoodInfoEvent.PreviousFoodCarbChanged(foodInfoModel.carb))
-            viewModel.onEvent(FoodInfoEvent.PreviousFoodFatChanged(foodInfoModel.fat))
-            viewModel.onEvent(FoodInfoEvent.PreviousServingSizeChanged(foodInfoModel.servingSize))
-        }
-
-    }
-    LaunchedEffect(key1 = context) {
-        viewModel.validationEvents.collect { event ->
-            when (event) {
-                FoodInfoViewModel.ValidationEvent.Succes -> navigateToShowMealsFood()
-            }
-        }
-    }
-
+    val dialogState = remember { mutableStateOf(false) }
+    val dialogTitle = remember { mutableStateOf("") }
+    val dialogOptions = remember { mutableStateOf(listOf<String>()) }
+    val selectedOption = remember { mutableStateOf("") }
 
 
     val inputDialogState = remember { mutableStateOf(false) }
@@ -98,6 +78,14 @@ fun FoodInfoScreen(
     val warningDialogTitle = remember { mutableStateOf("") }
     val warningDialogShowCancelButton = remember { mutableStateOf(true) }
     val warningDialogAlertMessage = remember { mutableStateOf("") }
+
+    val mealOptions = getStringArrayFromResource(id = R.array.select_meal)
+
+    val showDialog: (String, List<String>) -> Unit = { title, options ->
+        dialogTitle.value = title
+        dialogOptions.value = options
+        dialogState.value = true
+    }
 
     val showInputDialog: (String) -> Unit = { title ->
         inputDialogTitle.value = title
@@ -112,13 +100,79 @@ fun FoodInfoScreen(
 
     val servingValidator: (String) -> Boolean = { serving -> viewModel.validateServing(serving) }
 
+    LaunchedEffect(key1 = isFoodDuplicate.value) {
+        Log.d("AddScreen isfoodduplicate",isFoodDuplicate.value.toString())
+        if(isFoodDuplicate.value) {
+            Log.d("addscreen","Da")
+            showWarningDialog("Another food with ${state.foodName} name exists",
+                true,
+                "Would you like to override the information for this food?")
+        }
+        else Log.d("addscrenn","Nu")
+    }
+
+    LaunchedEffect(key1=true) {
+        Log.d("formattedDate1",formattedDate)
+        viewModel.onEvent(ApiFoodInfoEvent.FormattedDateChanged(formattedDate))
+    }
+    LaunchedEffect(key1 = state.formattedDate) {
+        viewModel.validationEvents.collect { event ->
+            when (event) {
+                ApiFoodInfoViewModel.ValidationEvent.Succes -> {
+                    Log.d("Launcheffect date", state.formattedDate)
+                    Toast.makeText(
+                        context,
+                        "Your food has been tracked!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    navigateToAddFood(formattedDate)
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(key1 = foodInfoModel) {
+        Log.d("foodInfoScreen", foodInfoModel.toString())
+        if(!foodInfoModel.isEmpty()){
+            viewModel.onEvent(ApiFoodInfoEvent.MealChanged(meal))
+            viewModel.onEvent(ApiFoodInfoEvent.ServingSizeChanged(foodInfoModel.servingSize))
+            Log.d("ApifoodScreen serving size", foodInfoModel.servingSize)
+            viewModel.onEvent(ApiFoodInfoEvent.KcalChanged(foodInfoModel.enercKcal))
+            viewModel.onEvent(ApiFoodInfoEvent.CarbsChanged(foodInfoModel.carb))
+            viewModel.onEvent(ApiFoodInfoEvent.ProteinChanged(foodInfoModel.prot))
+            viewModel.onEvent(ApiFoodInfoEvent.FatChanged(foodInfoModel.fat))
+            viewModel.onEvent(ApiFoodInfoEvent.FoodNameChanged(foodInfoModel.label))
+            viewModel.onEvent(ApiFoodInfoEvent.FoodBrandChanged(foodInfoModel.brand))
+            viewModel.onEvent(ApiFoodInfoEvent.FormattedDateChanged(formattedDate))
+
+            viewModel.onEvent(ApiFoodInfoEvent.PreviousFoodKcalChanged(foodInfoModel.enercKcal))
+            viewModel.onEvent(ApiFoodInfoEvent.PreviousFoodProteinChanged(foodInfoModel.prot))
+            viewModel.onEvent(ApiFoodInfoEvent.PreviousFoodCarbChanged(foodInfoModel.carb))
+            viewModel.onEvent(ApiFoodInfoEvent.PreviousFoodFatChanged(foodInfoModel.fat))
+            viewModel.onEvent(ApiFoodInfoEvent.PreviousServingSizeChanged(foodInfoModel.servingSize))
+        }
+
+    }
+
+//    LaunchedEffect(key1 = context) {
+//        viewModel.validationEvents.collect { event ->
+//            when (event) {
+//               // ApiFoodInfoViewModel.ValidationEvent.Succes -> navigateToAddFood(state.formattedDate)
+//                ApiFoodInfoViewModel.ValidationEvent.Succes -> {}
+//            }
+//        }
+//    }
+
+
+
+
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { },
                 navigationIcon = {
-                    IconButton(onClick = { navigateToShowMealsFood()}) { //navigateToScreen()
+                    IconButton(onClick = { navigateToAddFood(state.formattedDate)}) { //navigateToScreen()
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "NavigateToMain"
@@ -132,10 +186,11 @@ fun FoodInfoScreen(
                 ),
                 actions = {
                     IconButton(onClick = {
-                        showWarningDialog(
-                            "Update the food ${state.foodName}" + " ${state.foodBrand}" + " information?",
-                            true,
-                            "Would you like to ovveride the information for this food?")
+                        if(!viewModel.validateInputData(context,state.meal)){
+                            showWarningDialog("Please fill in all the required information!",
+                                false,
+                                "Please ensure all fields are filled out correctly before submitting.")
+                        } else viewModel.onEvent(ApiFoodInfoEvent.SubmitData)
 
                     }) {
                         Icon(
@@ -177,11 +232,26 @@ fun FoodInfoScreen(
 
                 LayoutWithFields(
                     state = state,
-                    onServingSizeClick = { showInputDialog("Enter serving size amount") },
+                    onMealClick = {showDialog("Choose your meal", mealOptions)},
+                    onServingSizeClick = { showInputDialog("Enter serving size amount") }
                 )
                 LogoSection()
             }
         }
+    )
+    SingleChoiceDialogSample(
+        title = dialogTitle.value,
+        options = dialogOptions.value,
+        selectedOption = selectedOption.value,
+        onOptionSelected = { selectedOption.value = it },
+        onDismissRequest = { dialogState.value = false },
+        onConfirm = {
+            when (dialogTitle.value) {
+                "Choose your meal" -> viewModel.onEvent(ApiFoodInfoEvent.MealChanged(selectedOption.value))
+            }
+            dialogState.value = false
+        },
+        visible = dialogState.value
     )
 
     TextInputDialog(
@@ -203,7 +273,7 @@ fun FoodInfoScreen(
         onConfirm = {
             when (inputDialogTitle.value) {
                 // "Enter serving size amount" -> viewModel.onEvent(FoodInfoEvent.ServingSizeChanged(inputTextServingSize.value))
-                "Enter serving size amount" -> viewModel.onEvent(FoodInfoEvent.MacrosChanged(inputTextServingSize.value))
+                "Enter serving size amount" -> viewModel.onEvent(ApiFoodInfoEvent.MacrosChanged(inputTextServingSize.value))
             }
              inputTextServingSize.value= ""
             inputDialogState.value = false
@@ -223,7 +293,7 @@ fun FoodInfoScreen(
     AlertDialogWarning(
         title = warningDialogTitle.value,
         onDismissRequest = { warningDialogState.value = false },
-        onConfirm = { viewModel.onEvent(FoodInfoEvent.SubmitData) },
+        onConfirm = { viewModel.onEvent(ApiFoodInfoEvent.SubmitData) },
         //onConfirm = { Log.d("GoalsScreen","onConfirm")},
         visible = warningDialogState.value,
         showCancelButton = warningDialogShowCancelButton.value,
@@ -233,8 +303,8 @@ fun FoodInfoScreen(
 
 @Composable
 fun LayoutWithFields(
-    state: FoodInfoState,
-
+    state: ApiFoodInfoState,
+    onMealClick: () -> Unit,
     onServingSizeClick: () -> Unit
 ) {
     Surface(
@@ -249,9 +319,9 @@ fun LayoutWithFields(
         ) {
             FieldRow(
                 label = stringResource(id = R.string.meal),
-                value = state.meal.ifEmpty { "asd" },
-                onFieldClick = {},
-                textColor = colorResource(id = R.color.orange)
+                value = state.meal.ifEmpty { "" },
+                onFieldClick = onMealClick,
+                textColor = colorResource(id = R.color.blueForDarkGrey)
             )
             Divider()
             FieldRow(

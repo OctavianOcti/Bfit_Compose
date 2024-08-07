@@ -59,6 +59,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -81,13 +82,13 @@ fun AddFoodScreen(
     formattedDate: String,
     navigateToDiary: () -> Unit = {},
     navigateToQuickAdd: (String) -> Unit = {},
-    navigateToFoodInfo: (FoodInfoModel, String, String) -> Unit = { _, _, _ -> }
+    navigateToApiFoodInfo: (FoodInfoModel, String, String) -> Unit = { _, _, _ -> }
 ) {
     val viewModel: AddFoodViewModel = hiltViewModel()
     val foodInfoState by viewModel.foodInfoState.collectAsState()
     val state = viewModel.state
     var showCameraPreview by remember { mutableStateOf(false) }
-
+    val context = LocalContext.current
     LaunchedEffect(key1 = formattedDate) {
         Log.d("AddFoodScreen date", formattedDate)
     }
@@ -127,7 +128,7 @@ fun AddFoodScreen(
                         items(foodInfoState) { foodInfo ->
                             ApiCard(
                                 foodInfoModel = foodInfo,
-                                onCLick = { navigateToFoodInfo(foodInfo, "Select your meal", formattedDate) }
+                                onCLick = { navigateToApiFoodInfo(foodInfo, context.getString(R.string.select_meal), formattedDate) }
                             )
                         }
                     }

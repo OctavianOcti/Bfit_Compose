@@ -5,6 +5,8 @@ import com.example.bfit.navdrawerfeatures.addFood.data.repository.AddFoodReposit
 import com.example.bfit.navdrawerfeatures.addFood.domain.repository.AddFoodRepository
 import com.example.bfit.navdrawerfeatures.adjust_calories.data.repository.MacrosRepositoryImpl
 import com.example.bfit.navdrawerfeatures.adjust_calories.domain.repository.MacrosRepository
+import com.example.bfit.navdrawerfeatures.apiFoodInfo.data.repository.ApiFoodInfoRepositoryImpl
+import com.example.bfit.navdrawerfeatures.apiFoodInfo.domain.repository.ApiFoodInfoRepository
 import com.example.bfit.navdrawerfeatures.diary.data.repository.DiaryRepositoryImpl
 import com.example.bfit.navdrawerfeatures.diary.domain.repository.DiaryRepository
 import com.example.bfit.navdrawerfeatures.foodInfo.data.repository.FoodInfoRepositoryImpl
@@ -50,4 +52,7 @@ abstract class  RepositoryModule {
 
     @Binds
     abstract fun bindAddFoodRepository(addFoodRepositoryImpl: AddFoodRepositoryImpl): AddFoodRepository
+
+    @Binds
+    abstract fun bindApiFoodInfoRepository(apiFoodInfoRepositoryImpl: ApiFoodInfoRepositoryImpl): ApiFoodInfoRepository
 }

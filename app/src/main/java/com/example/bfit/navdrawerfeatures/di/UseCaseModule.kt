@@ -8,6 +8,7 @@ import com.example.bfit.navdrawerfeatures.adjust_calories.domain.MacrosUseCases
 import com.example.bfit.navdrawerfeatures.adjust_calories.domain.GetClosestDivisibleValue
 import com.example.bfit.navdrawerfeatures.adjust_calories.domain.ValidateCalorieAmount
 import com.example.bfit.navdrawerfeatures.adjust_calories.domain.ValidateMacrosPercentages
+import com.example.bfit.navdrawerfeatures.apiFoodInfo.domain.ApiFoodInfoUseCases
 import com.example.bfit.navdrawerfeatures.foodInfo.domain.data.AndroidServingPatternValidator
 import com.example.bfit.navdrawerfeatures.foodInfo.domain.FoodInfoUseCases
 import com.example.bfit.navdrawerfeatures.foodInfo.domain.ValidateServing
@@ -67,6 +68,13 @@ object UseCaseModule {
         return AddFoodUseCases(
             getFoodUseCase = GetFoodUseCase(addFoodRepository),
             getFoodByBarcodeUseCase = GetFoodByBarcodeUseCase(addFoodRepository)
+        )
+    }
+    @Provides
+    fun provideApiFoodInfoUseCases():ApiFoodInfoUseCases{
+        return ApiFoodInfoUseCases(
+            validateServing = com.example.bfit.navdrawerfeatures.apiFoodInfo.domain.ValidateServing(com.example.bfit.navdrawerfeatures.apiFoodInfo.domain.data.AndroidServingPatternValidator()),
+            validateInputData = com.example.bfit.navdrawerfeatures.apiFoodInfo.domain.ValidateInputData()
         )
     }
 }

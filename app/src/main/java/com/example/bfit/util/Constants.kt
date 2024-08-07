@@ -13,4 +13,5 @@ object Constants {
     const val MAX_AGE = 122
     const val MIN_CALORIE = 0
     const val MAX_CALORIE = 20000
+    const val DEFAULT_SERVING_SIZE = "100"
 }
