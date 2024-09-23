@@ -12,4 +12,3 @@ This Kotlin-based Android application helps users track and manage their nutriti
 - **Progress tracking**: Monitor your progress over time and stay motivated.
 - **Custom recipe addition**: Add and manage personalized recipes within the app.
 
-The app uses **Jetpack Compose** for modern UI, ensuring a smooth and responsive experience while adhering to best practices with **Clean Architecture** and **MVVM**. **Hilt** simplifies dependency management, while **Coroutines** and **Flows** ensure efficient and scalable data handling.
