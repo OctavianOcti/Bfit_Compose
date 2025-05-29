@@ -1,14 +1,20 @@
 package com.example.bfit.navdrawerfeatures.home.data
-
 import android.util.Log
 import com.example.bfit.main.domain.model.UserInfo
 import com.example.bfit.navdrawerfeatures.home.domain.DailyInfo
 import com.example.bfit.navdrawerfeatures.home.domain.HomeRepository
+import com.example.bfit.navdrawerfeatures.home.presentation.model.DailyKcalEntry
 import com.example.bfit.util.Resource
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 class HomeRepositoryImpl @Inject constructor(
@@ -88,4 +94,49 @@ class HomeRepositoryImpl @Inject constructor(
             close()
         }
     }
+
+    override suspend fun getLast7DaysKcal(
+        userUid: String,
+        today: String
+    ): Flow<Resource<List<DailyKcalEntry>>> = flow {
+        emit(Resource.Loading())
+
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val todayDate = dateFormat.parse(today)
+
+        val snapshot = firebaseFirestore
+            .collection("users")
+            .document(userUid)
+            .collection("Day Tracker")
+            .get()
+            .await()
+
+        val filtered = snapshot.documents
+            .filter { document ->
+                val documentDate = try {
+                    dateFormat.parse(document.id)
+                } catch (e: ParseException) {
+                    null
+                }
+                documentDate != null && documentDate.before(todayDate)
+            }
+            .sortedByDescending { dateFormat.parse(it.id) }
+
+        val last7 = filtered.take(7)
+
+        val result = last7.mapNotNull { doc ->
+            val idParts = doc.id.split("-")
+            if (idParts.size >= 2) {
+                val label = "${idParts[0]}-${idParts[1]}"
+                val kcal = doc.get("total_kcal")?.toString() ?: return@mapNotNull null
+                DailyKcalEntry(label, kcal)
+            } else null
+        }
+
+        emit(Resource.Success(data = result))
+
+    }.catch { e ->
+        emit(Resource.Error(message = e.message ?: "Unknown error"))
+    }
+
 }

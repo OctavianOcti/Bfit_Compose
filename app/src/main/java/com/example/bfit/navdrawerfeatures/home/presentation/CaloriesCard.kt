@@ -10,7 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -113,7 +112,7 @@ fun CalorieCard(
             Text(
                 text = kcalLeft,
                 fontSize = 22.sp,
-                color = Color(0xFFFF5722),
+                color =  if (kcalLeft == "0.0") colorResource(R.color.whiteDelimiter) else colorResource(R.color.orange) ,
                 modifier = Modifier.constrainAs(progressText) {
                     centerTo(progressBar)
                 }
