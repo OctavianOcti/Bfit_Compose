@@ -20,10 +20,6 @@ class DiaryViewModel @Inject constructor(
     private val diaryRepository: DiaryRepository
 ) : ViewModel() {
 
-
-    //    var _state by mutableStateOf(DiaryState())
-//        private set
-//    val state: State<DiaryState> = _state
     var state by mutableStateOf(DiaryState())
         private set
 

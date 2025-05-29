@@ -14,6 +14,8 @@ import com.example.bfit.navdrawerfeatures.foodInfo.domain.repository.FoodInfoRep
 import com.example.bfit.navdrawerfeatures.goals.data.repository.GoalsRepositoryImpl
 
 import com.example.bfit.navdrawerfeatures.goals.domain.repository.GoalsRepository
+import com.example.bfit.navdrawerfeatures.home.data.HomeRepositoryImpl
+import com.example.bfit.navdrawerfeatures.home.domain.HomeRepository
 import com.example.bfit.navdrawerfeatures.quickAdd.data.QuickAddRepositoryImpl
 import com.example.bfit.navdrawerfeatures.quickAdd.domain.repository.QuickAddRepository
 import com.example.bfit.navdrawerfeatures.profile.data.repository.ProfileRepositoryImpl
@@ -55,4 +57,7 @@ abstract class  RepositoryModule {
 
     @Binds
     abstract fun bindApiFoodInfoRepository(apiFoodInfoRepositoryImpl: ApiFoodInfoRepositoryImpl): ApiFoodInfoRepository
+
+    @Binds
+    abstract fun bindHomeRepository(homeRepositoryImpl: HomeRepositoryImpl) : HomeRepository
 }

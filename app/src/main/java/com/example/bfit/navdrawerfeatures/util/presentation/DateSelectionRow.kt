@@ -1,4 +1,4 @@
-package com.example.bfit.navdrawerfeatures.diary.presentation
+package com.example.bfit.navdrawerfeatures.util.presentation
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bfit.R
+import com.example.bfit.navdrawerfeatures.diary.presentation.DiaryState
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -35,12 +36,13 @@ import java.util.Date
 @SuppressLint("SimpleDateFormat")
 @Composable
 fun DateSelectionRow(
-    state: DiaryState,
+    //state: DiaryState,
+    formattedDate: String,
     onDateSelected: (String) -> Unit
 ) {
     val context = LocalContext.current
     val dateFormat = SimpleDateFormat("dd-MM-yyyy")
-    var selectedDate by remember { mutableStateOf(state.formattedDate) }
+    var selectedDate by remember { mutableStateOf(formattedDate) }
 
     fun updateDate(newDate: Date) {
         val formattedDate = dateFormat.format(newDate)

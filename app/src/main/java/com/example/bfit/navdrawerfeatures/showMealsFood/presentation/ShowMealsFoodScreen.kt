@@ -145,7 +145,9 @@ fun ShowMealFoodScreen(
                         SwipeDismissItem(
                             item = foodInfo,
                             onRemove = { viewModel.onEvent(ShowMealsFoodEvent.DeleteFood(foodInfo)) },
-                            modifier = Modifier.animateItemPlacement(tween(200))
+                           // modifier = Modifier.animateItemPlacement(tween(200))
+                            //modifier = Modifier.animateItem(fadeOutSpec = tween(200))
+                            modifier = Modifier
                         ) {
                             MealCard(
                                 foodInfoModel = foodInfo,

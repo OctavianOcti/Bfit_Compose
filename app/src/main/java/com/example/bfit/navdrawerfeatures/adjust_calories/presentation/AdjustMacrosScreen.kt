@@ -94,7 +94,7 @@ fun AdjustMacrosScreen(
 
 
 
-        val inputDialogState = remember { mutableStateOf(false) }
+    val inputDialogState = remember { mutableStateOf(false) }
     val inputDialogTitle = remember { mutableStateOf("") }
     val inputTextKcal = remember { mutableStateOf("") }
 

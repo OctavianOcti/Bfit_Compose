@@ -6,16 +6,17 @@ plugins {
     id("com.google.gms.google-services")
     alias(libs.plugins.kotlin.serialization)
     id("kotlin-parcelize")
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "com.example.bfit"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.bfit"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -35,17 +36,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion. VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
     }
     packaging {
         resources {
@@ -85,7 +83,6 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 
-    implementation(libs.material3)
     implementation(libs.androidx.material3.adaptive.navigation.suite)
     implementation (libs.androidx.constraintlayout.compose)
 
@@ -100,12 +97,24 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
 
+    implementation (libs.compose.charts)
+
     // Permissions
     implementation(libs.accompanist.permissions)
+
 
 
 
 }
 kapt {
     correctErrorTypes = true
+}
+configurations.all {
+    resolutionStrategy {
+        force("org.jetbrains.kotlinx:kotlinx-serialization-bom:1.6.3")
+        force("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.3")
+        force("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.6.3")
+        force("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+        force("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.3")
+    }
 }
