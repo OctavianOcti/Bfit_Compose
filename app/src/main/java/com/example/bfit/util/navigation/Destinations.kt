@@ -25,6 +25,12 @@ object Goals
 object Diary
 
 @Serializable
+object CustomMealFood
+
+@Serializable
+object CreateFood
+
+@Serializable
 data class AdjustMacros(val userInfo : List<String>)
 
 @Serializable

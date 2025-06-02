@@ -1,4 +1,4 @@
-package com.example.bfit.navdrawerfeatures.showMealsFood.presentation
+package com.example.bfit.navdrawerfeatures.customMealFood.viewFood.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -21,7 +20,7 @@ import com.example.bfit.R
 import com.example.bfit.navdrawerfeatures.showMealsFood.domain.FoodInfoModel
 
 @Composable
-fun MealCard(
+fun FoodCard(
     foodInfoModel: FoodInfoModel,
     onCLick: () -> Unit ={}
 ) {
@@ -44,47 +43,16 @@ fun MealCard(
                 .padding(14.dp)
         ) {
             // Create references for the composables
-            val (mealLabel, textServingSize, servingSize, servingType, caloriesLogged, textCaloriesLogged) = createRefs()
+            val (foodLabel, caloriesLogged, textCaloriesLogged) = createRefs()
 
             Text(
                 text = foodInfoModel.label,
                 color = colorResource(id = R.color.blueForDarkGrey),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.constrainAs(mealLabel) {
+                modifier = Modifier.constrainAs(foodLabel) {
                     start.linkTo(parent.start)
                     top.linkTo(parent.top)
-                }
-            )
-
-            Text(
-                text = stringResource(id = R.string.serving_size),
-                color = colorResource(id = R.color.whiteDelimiter),
-                fontSize = 12.sp,
-                modifier = Modifier.constrainAs(textServingSize) {
-                    start.linkTo(parent.start)
-                    top.linkTo(mealLabel.bottom, margin = 3.dp)
-                }
-            )
-
-            Text(
-                text = foodInfoModel.servingSize,
-                color = colorResource(id = R.color.orange),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.constrainAs(servingSize) {
-                    start.linkTo(textServingSize.end, margin = 5.dp)
-                    top.linkTo(textServingSize.top)
-                    bottom.linkTo(textServingSize.bottom)
-                }
-            )
-
-            Text(
-                text = stringResource(id = R.string.g),
-                color = colorResource(id = R.color.orange),
-                modifier = Modifier.constrainAs(servingType) {
-                    start.linkTo(servingSize.end, margin = 5.dp)
-                    bottom.linkTo(servingSize.bottom)
                 }
             )
 
@@ -94,8 +62,8 @@ fun MealCard(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.constrainAs(caloriesLogged) {
-                    end.linkTo(parent.end, margin = 20.dp)
-                    top.linkTo(textServingSize.bottom, margin = 14.dp)
+                    end.linkTo(parent.start, margin = 20.dp)
+                    top.linkTo(foodLabel.bottom, margin = 14.dp)
                     bottom.linkTo(parent.bottom, margin = 5.dp)
                 }
             )
@@ -112,4 +80,3 @@ fun MealCard(
         }
     }
 }
-

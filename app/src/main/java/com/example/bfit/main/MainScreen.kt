@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
@@ -37,26 +36,26 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.bfit.navdrawerfeatures.home.presentation.HomeScreen
 import com.example.bfit.R
-import com.example.bfit.util.navigation.Home
-import com.example.bfit.util.navigation.Profile
-import com.example.bfit.main.presentation.components.AppNavigationDrawer
 import com.example.bfit.main.presentation.AuthViewModel
+import com.example.bfit.main.presentation.components.AppNavigationDrawer
 import com.example.bfit.main.presentation.components.AppTopAppBar
 import com.example.bfit.main.presentation.utils.BottomNavigationItem
 import com.example.bfit.main.presentation.utils.NavigationItem
+import com.example.bfit.navdrawerfeatures.home.presentation.HomeScreen
 import com.example.bfit.navdrawerfeatures.profile.presentation.ProfileScreen
+import com.example.bfit.util.navigation.Home
+import com.example.bfit.util.navigation.Profile
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navigateToLogin : () -> Unit = {},
     navigateToGoals : () -> Unit = {},
     navigateToMacros: (List<String>) -> Unit = {},
-    navigateDoDiary: () -> Unit = {}
+    navigateDoDiary: () -> Unit = {},
+    navigateToCustomMealFood: () -> Unit = {}
 
 ) {
     val authViewModel: AuthViewModel = hiltViewModel()
@@ -111,9 +110,9 @@ fun MainScreen(
                     navigateToLogin = { navigateToLogin() },
                     navigateToGoals = {navigateToGoals()},
                     navigateToDiary = {navigateDoDiary()},
+                    navigateToCustomMealFood = {navigateToCustomMealFood()},
                     onLogout = { authViewModel.signOut() },
                     navController = navController,
-                    selectedBottomItemIndex = selectedBottomItemIndex,
                     onBottomItemSelected = { index -> selectedBottomItemIndex = index }
                 )
             },
@@ -161,14 +160,6 @@ fun MainScreen(
                 }
 
             ) { paddingValues ->
-                // Apply paddingValues to your content to account for the top bar
-//                        Column(
-//                            modifier = Modifier
-//                                .fillMaxSize()
-//                                .padding(paddingValues)
-//                        ) {
-//                            ProfileScreen()
-//                        }
                 NavHost(
                     navController = navController,
                     startDestination = Home,
@@ -179,12 +170,9 @@ fun MainScreen(
                     composable<Home> {
                         HomeScreen()
                     }
-//                    composable<Profile> {
-//                        ProfileScreen { navigateToGoals() }
-//                    }
                     composable<Profile> {
                         ProfileScreen(
-                            {navigateToGoals()}, {navigateToMacros(it)}, {navigateDoDiary()}
+                            {navigateToGoals()}, {navigateToMacros(it)}, {navigateDoDiary()}, {navigateToCustomMealFood()}
                         )
                     }
                 }

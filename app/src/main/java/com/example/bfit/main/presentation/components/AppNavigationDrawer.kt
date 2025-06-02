@@ -1,7 +1,6 @@
 package com.example.bfit.main.presentation.components
 
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -38,9 +36,9 @@ fun AppNavigationDrawer(
     navigateToLogin: () -> Unit,
     navigateToGoals: () -> Unit,
     navigateToDiary: () -> Unit,
+    navigateToCustomMealFood: () -> Unit,
     onLogout: () -> Unit,
     navController: NavController,
-    selectedBottomItemIndex: Int,
     onBottomItemSelected: (Int) -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -86,6 +84,9 @@ fun AppNavigationDrawer(
                         }
                         else if(item.title == "Diary"){
                             navigateToDiary()
+                        }
+                        else if (item.title == "Meals & Food"){
+                            navigateToCustomMealFood()
                         }
                         else {
                             onItemSelected(index)

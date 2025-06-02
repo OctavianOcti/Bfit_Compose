@@ -12,6 +12,8 @@ import com.example.bfit.main.MainScreen
 import com.example.bfit.navdrawerfeatures.addFood.presentation.AddFoodScreen
 import com.example.bfit.navdrawerfeatures.adjust_calories.presentation.AdjustMacrosScreen
 import com.example.bfit.navdrawerfeatures.apiFoodInfo.presentation.ApiFoodInfoScreen
+import com.example.bfit.navdrawerfeatures.customMealFood.common.presentation.CustomMealFood
+import com.example.bfit.navdrawerfeatures.customMealFood.createFood.presentation.CreateFoodScreen
 import com.example.bfit.navdrawerfeatures.diary.presentation.DiaryScreen
 import com.example.bfit.navdrawerfeatures.foodInfo.presentation.FoodInfoScreen
 import com.example.bfit.navdrawerfeatures.goals.presentation.GoalsScreen
@@ -41,16 +43,24 @@ fun MyNavigationHost(
         }
         composable<Main> {
             MainScreen (
-                {navController.navigate(Login)},
-                {navController.navigate(Goals)} ,
-                {navController.navigate(AdjustMacros(it))},
-                {navController.navigate(Diary)}
+              navigateToLogin = {navController.navigate(Login)},
+                navigateToGoals =  {navController.navigate(Goals)} ,
+                navigateToMacros = {navController.navigate(AdjustMacros(it))},
+               navigateDoDiary =  {navController.navigate(Diary)},
+                navigateToCustomMealFood = {navController.navigate(CustomMealFood)}
             )
         }
         composable<Goals> {
             GoalsScreen(
                 { navController.navigate(Main)},
                 {navController.navigate(AdjustMacros(it))}
+            )
+        }
+
+        composable<CustomMealFood>{
+            CustomMealFood(
+                navigateToMain = {navController.navigate(Main)},
+                navigateToCreateFood = {navController.navigate(CreateFood)}
             )
         }
 
@@ -97,6 +107,9 @@ fun MyNavigationHost(
                 // navigateToFoodInfo = {navController.navigate(FoodInfo(it))}
             )
         }
+        composable<CreateFood>{
+            CreateFoodScreen(navigateToCustomMealFood = {navController.navigate(CustomMealFood)})
+        }
 
         composable<FoodInfo> (
             //typeMap = mapOf(typeOf<FoodInfoModel>() to FoodInfoType)
@@ -122,7 +135,6 @@ fun MyNavigationHost(
                 navigateToAddFood = {navController.navigate(AddFood(it))}
             )
         }
-
     }
 
 }

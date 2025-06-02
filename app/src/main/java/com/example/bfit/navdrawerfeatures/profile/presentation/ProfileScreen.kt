@@ -45,7 +45,8 @@ import kotlinx.coroutines.launch
 fun ProfileScreen(
     navigateToGoals : () -> Unit = {},
     navigateToMacros: (List<String>) -> Unit = {},
-    navigateToDiary : () -> Unit = {}
+    navigateToDiary : () -> Unit = {},
+    navigateToCustomMealFood : () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
     val viewModel : ProfileViewModel = hiltViewModel()
@@ -60,7 +61,13 @@ fun ProfileScreen(
             .verticalScroll(scrollState)
     ) {
         UserInfoSection(userInfo)
-        CustomizationSection(navigateToGoals,navigateToMacros,navigateToDiary,userInfo)
+        CustomizationSection(
+          navigateToGoals=navigateToGoals,
+           navigateToMacros= navigateToMacros,
+            navigateToDiary = navigateToDiary,
+            navigateToCustomMealFood = navigateToCustomMealFood,
+            userInfo = userInfo,
+        )
         LogoSection()
         FooterSection()
     }
@@ -267,6 +274,7 @@ fun CustomizationSection(
     navigateToGoals: () -> Unit,
     navigateToMacros: (List<String>) -> Unit,
     navigateToDiary: () -> Unit,
+    navigateToCustomMealFood : () -> Unit,
     userInfo: UserInfo
 )
 {
@@ -319,7 +327,7 @@ fun CustomizationSection(
                     iconResId = R.drawable.baseline_set_meal_24,
                     label = stringResource(id = R.string.adjust_meals_and_food),
                     description = "",
-                    onClick = { /* Handle Adjust Meals and Food click */ }
+                    onClick = {  navigateToCustomMealFood() }
                 )
                 HorizontalDivider(
                     modifier = Modifier.padding(vertical = 10.dp),
