@@ -28,8 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.example.bfit.R
-import com.example.bfit.navdrawerfeatures.customMealFood.viewFood.presentation.FoodScreen
-import com.example.bfit.navdrawerfeatures.customMealFood.viewMeals.presentation.MealsScreen
+import com.example.bfit.navdrawerfeatures.customMealFood.food.viewFood.presentation.FoodScreen
+import com.example.bfit.navdrawerfeatures.customMealFood.meal.viewMeals.presentation.MealsScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

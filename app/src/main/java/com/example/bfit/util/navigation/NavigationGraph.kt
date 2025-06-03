@@ -13,7 +13,7 @@ import com.example.bfit.navdrawerfeatures.addFood.presentation.AddFoodScreen
 import com.example.bfit.navdrawerfeatures.adjust_calories.presentation.AdjustMacrosScreen
 import com.example.bfit.navdrawerfeatures.apiFoodInfo.presentation.ApiFoodInfoScreen
 import com.example.bfit.navdrawerfeatures.customMealFood.common.presentation.CustomMealFood
-import com.example.bfit.navdrawerfeatures.customMealFood.createFood.presentation.CreateFoodScreen
+import com.example.bfit.navdrawerfeatures.customMealFood.food.createFood.presentation.CreateFoodScreen
 import com.example.bfit.navdrawerfeatures.diary.presentation.DiaryScreen
 import com.example.bfit.navdrawerfeatures.foodInfo.presentation.FoodInfoScreen
 import com.example.bfit.navdrawerfeatures.goals.presentation.GoalsScreen

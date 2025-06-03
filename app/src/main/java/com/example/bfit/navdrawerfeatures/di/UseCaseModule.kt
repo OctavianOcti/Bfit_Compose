@@ -9,7 +9,7 @@ import com.example.bfit.navdrawerfeatures.adjust_calories.domain.GetClosestDivis
 import com.example.bfit.navdrawerfeatures.adjust_calories.domain.ValidateCalorieAmount
 import com.example.bfit.navdrawerfeatures.adjust_calories.domain.ValidateMacrosPercentages
 import com.example.bfit.navdrawerfeatures.apiFoodInfo.domain.ApiFoodInfoUseCases
-import com.example.bfit.navdrawerfeatures.customMealFood.createFood.domain.CreateFoodUseCases
+import com.example.bfit.navdrawerfeatures.customMealFood.food.createFood.domain.CreateFoodUseCases
 import com.example.bfit.navdrawerfeatures.foodInfo.domain.data.AndroidServingPatternValidator
 import com.example.bfit.navdrawerfeatures.foodInfo.domain.FoodInfoUseCases
 import com.example.bfit.navdrawerfeatures.foodInfo.domain.ValidateServing
@@ -79,10 +79,12 @@ object UseCaseModule {
         )
     }
     @Provides
-    fun provideCreateCustomFoodUseCases():CreateFoodUseCases{
+    fun provideCreateCustomFoodUseCases(): CreateFoodUseCases {
        return CreateFoodUseCases(
-           validateData = com.example.bfit.navdrawerfeatures.customMealFood.createFood.domain.ValidateData(com.example.bfit.navdrawerfeatures.customMealFood.createFood.domain.data.AndroidQuantityPatternValidator()),
-           validateInputData = com.example.bfit.navdrawerfeatures.customMealFood.createFood.domain.ValidateInputData()
+           validateData = com.example.bfit.navdrawerfeatures.customMealFood.food.createFood.domain.ValidateData(
+               com.example.bfit.navdrawerfeatures.customMealFood.food.createFood.domain.data.AndroidQuantityPatternValidator()
+           ),
+           validateInputData = com.example.bfit.navdrawerfeatures.customMealFood.food.createFood.domain.ValidateInputData()
        )
     }
 }
