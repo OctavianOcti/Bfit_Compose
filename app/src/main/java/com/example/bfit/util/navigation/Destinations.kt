@@ -31,6 +31,9 @@ object CustomMealFood
 object CreateFood
 
 @Serializable
+object CreateMeal
+
+@Serializable
 data class AdjustMacros(val userInfo : List<String>)
 
 @Serializable

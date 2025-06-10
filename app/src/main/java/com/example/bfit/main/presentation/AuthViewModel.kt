@@ -34,7 +34,6 @@ class AuthViewModel @Inject constructor(
         Log.d("AuthViewModel","Am intrat")
     }
 
-    //DataProvider.updateAuthState(currentUser)
 
     // 1.
     private fun getAuthState() = repository.getAuthState(viewModelScope)
@@ -44,24 +43,3 @@ class AuthViewModel @Inject constructor(
     }
 }
 
-//@HiltViewModel
-//class AuthViewModel @Inject constructor(
-//    private val repository: AuthStateRepository
-//) : ViewModel() {
-//    private val _authState = MutableStateFlow(AuthState.SignedOut)
-//    val authState = _authState.asStateFlow()
-//
-//
-//    init {
-//        viewModelScope.launch {
-//            repository.getAuthState(viewModelScope).collectLatest { user ->
-//                DataProvider.updateAuthState(user)
-//                _authState.value = DataProvider.authState
-//            }
-//        }
-//    }
-//
-//    fun signOut() = viewModelScope.launch(Dispatchers.IO) {
-//        DataProvider.signOutResponse = Response.Loading
-//        DataProvider.signOutResponse = repository.signOut()}
-//}

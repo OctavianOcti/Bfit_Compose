@@ -14,6 +14,7 @@ import com.example.bfit.navdrawerfeatures.adjust_calories.presentation.AdjustMac
 import com.example.bfit.navdrawerfeatures.apiFoodInfo.presentation.ApiFoodInfoScreen
 import com.example.bfit.navdrawerfeatures.customMealFood.common.presentation.CustomMealFood
 import com.example.bfit.navdrawerfeatures.customMealFood.food.createFood.presentation.CreateFoodScreen
+import com.example.bfit.navdrawerfeatures.customMealFood.meal.createMeal.presentation.CreateMealScreen
 import com.example.bfit.navdrawerfeatures.diary.presentation.DiaryScreen
 import com.example.bfit.navdrawerfeatures.foodInfo.presentation.FoodInfoScreen
 import com.example.bfit.navdrawerfeatures.goals.presentation.GoalsScreen
@@ -60,7 +61,8 @@ fun MyNavigationHost(
         composable<CustomMealFood>{
             CustomMealFood(
                 navigateToMain = {navController.navigate(Main)},
-                navigateToCreateFood = {navController.navigate(CreateFood)}
+                navigateToCreateFood = {navController.navigate(CreateFood)},
+                navigateToCreateMeal = {navController.navigate(CreateMeal)}
             )
         }
 
@@ -109,6 +111,9 @@ fun MyNavigationHost(
         }
         composable<CreateFood>{
             CreateFoodScreen(navigateToCustomMealFood = {navController.navigate(CustomMealFood)})
+        }
+        composable<CreateMeal>{
+            CreateMealScreen()
         }
 
         composable<FoodInfo> (

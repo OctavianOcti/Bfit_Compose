@@ -43,7 +43,7 @@ fun MealsScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         FoodMealSection(
             onClick = {navigateToCreateMeal()},
-            text = stringResource(R.string.create_a_food),
+            text = stringResource(R.string.create_a_meal),
             painter = painterResource(id = R.drawable.watermelon),
             imageContentDescription = stringResource(R.string.create_a_food)
         )

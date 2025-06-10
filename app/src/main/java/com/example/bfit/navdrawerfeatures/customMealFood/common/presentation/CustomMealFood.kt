@@ -36,7 +36,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun CustomMealFood(
     navigateToMain: () -> Unit = {},
-    navigateToCreateFood: () ->Unit ={}
+    navigateToCreateFood: () ->Unit ={},
+    navigateToCreateMeal: () -> Unit = {}
 ){
     Scaffold(
      topBar = {
@@ -66,7 +67,7 @@ fun CustomMealFood(
                    .background(colorResource(id= R.color.darkGrey))
 
            ){
-            FoodMealsLayout(navigateToCreateFood={navigateToCreateFood()})
+            FoodMealsLayout(navigateToCreateFood={navigateToCreateFood()}, {navigateToCreateMeal()})
            }
        }
     )
@@ -74,7 +75,8 @@ fun CustomMealFood(
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun FoodMealsLayout(
-    navigateToCreateFood: () -> Unit
+    navigateToCreateFood: () -> Unit,
+    navigateToCreateMeal: () -> Unit
 ) {
     val tabTitles = listOf("Food", "Meals",)
     val pagerState = rememberPagerState { tabTitles.size }
@@ -116,7 +118,7 @@ fun FoodMealsLayout(
         ) { page ->
             when (page) {
                 0 -> FoodScreen(navigateToCreateFood = navigateToCreateFood)
-                1 -> MealsScreen()
+                1 -> MealsScreen(navigateToCreateMeal = navigateToCreateMeal)
             }
         }
     }
