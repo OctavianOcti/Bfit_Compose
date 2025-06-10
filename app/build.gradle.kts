@@ -102,10 +102,27 @@ dependencies {
     // Permissions
     implementation(libs.accompanist.permissions)
 
+    // JUnit 5 - Jupiter API (for writing tests: @Test, Assertions, etc.)
+    testImplementation(libs.junit.jupiter.api)
 
+    // JUnit 5 - Jupiter Engine (for running the tests)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+
+    // JUnit 5 - Jupiter Params (for @ParameterizedTest - highly recommended)
+    testImplementation(libs.junit.jupiter.params)
+
+    // If you need to integrate with Mockito (very common for mocking dependencies)
+     testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.junit.jupiter)
+    testImplementation(libs.mockito.kotlin) // Kotlin-friendly Mockito
 
 
 }
+// To ensure JUnit 5 tests are run by Gradle
+tasks.withType(Test::class.java) {
+    useJUnitPlatform()
+}
+
 kapt {
     correctErrorTypes = true
 }
